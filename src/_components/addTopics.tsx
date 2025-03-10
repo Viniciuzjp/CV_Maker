@@ -141,27 +141,27 @@ export default function AddTopics() {
         <>
         <div className="flex w-screen h-screen">
         <section className="flex flex-col w-1/2 h-screen justify-center items-center overflow-y-scroll">
-          <div className="bg-white flex flex-col w-9/10 h-auto border justify-center items-center mt-100 mb-2 rounded-md">
+          <div className="bg-white flex flex-col w-9/10 h-auto border border-gray-500 justify-center items-center mt-100 mb-2 rounded-md">
             <input
             onChange={handleChange}
             type="text"
             name="about"
             defaultValue={"About me"}
-            className="w-9/10 h-12 text-2xl font-bold border-b mb-5 pl-5 outline-0"
+            className="w-9/10 h-12 text-2xl font-bold border-b mb-5 pl-5 outline-0 border-gray-300 text-gray-400"
              />
             <input
             type="text"
             name="name"
             onChange={handleChange}
             placeholder="Enter your name"
-            className="w-9/10 h-12 border mb-5 pl-5 rounded-md"
+            className="w-9/10 h-12 border mb-5 pl-5 rounded-md outline-0 border-gray-300 placeholder:text-gray-400 text-gray-500"
             />
             <input
             onChange={handleChange}
             type="text"
             name="adress"
             placeholder="Enter your adress"
-            className="w-9/10 h-12 border mb-5 pl-5 rounded-md"
+            className="w-9/10 h-12 border mb-5 pl-5 rounded-md outline-0 border-gray-300 placeholder:text-gray-400 text-gray-500"
             />
             <div className="flex w-9/10 h-12 mb-5">
             <input
@@ -169,14 +169,14 @@ export default function AddTopics() {
             type="text"
             name="email"
             placeholder="Enter your E-mail"
-            className="w-7/10 h-12 border mb-5 pl-5 mr-5 rounded-md"
+            className="w-7/10 h-12 border mb-5 pl-5 mr-5 rounded-md outline-0 border-gray-300 placeholder:text-gray-400 text-gray-500"
             />
             <input
             onChange={handleChange}
             type="text"
             name="telephone"
             placeholder="Enter your telephone number"
-            className="w-3/10 h-12 border mb-5 pl-5 rounded-md"
+            className="w-3/10 h-12 border mb-5 pl-5 rounded-md outline-0 border-gray-300 placeholder:text-gray-400 text-gray-500"
             />
             </div>
             <input
@@ -184,23 +184,23 @@ export default function AddTopics() {
             type="text"
             name="linkedin"
             placeholder="Enter your LinkedIn"
-            className="w-9/10 h-12 border mb-5 pl-5 rounded-md"
+            className="w-9/10 h-12 border mb-5 pl-5 rounded-md outline-0 border-gray-300 placeholder:text-gray-400 text-gray-500"
             />
             <input
             onChange={handleChange}
             type="text"
             name="github"
             placeholder="Enter your Github"
-            className="w-9/10 h-12 border mb-5 pl-5 rounded-md"
+            className="w-9/10 h-12 border mb-5 pl-5 rounded-md outline-0 border-gray-300 placeholder:text-gray-400 text-gray-500"
             />
           </div>
-          <div className="flex flex-col pt-5 w-9/10 h-auto justify-center items-center mt-10 mb-20 rounded-md flex-grow">
+          <div className="flex flex-col pt-5 w-9/10 h-auto justify-center items-center mt-10 mb-20 rounded-md flex-grow placeholder:text-gray-400 text-gray-500">
             <input
               onChange={handleChange}
               type="text"
               name="objective"
               placeholder="Say more about your objective"
-              className="w-9/10 h-12 border mb-5 pl-5 rounded-md"
+              className="w-9/10 h-12 border mb-5 pl-5 rounded-md outline-0 border-gray-300 placeholder:text-gray-400 text-gray-500"
             />
             <div className="w-9/10 h-12 flex mb-5">
               <input
@@ -208,14 +208,14 @@ export default function AddTopics() {
                 type="text"
                 name="experience"
                 placeholder="Your experience"
-                className="w-7/10 h-12 border mb-5 pl-5 rounded-md"
+                className="w-7/10 h-12 border mb-5 pl-5 rounded-md outline-0 border-gray-300 placeholder:text-gray-400 text-gray-500"
               />
               <input
                 onChange={handleChange}
                 type="text"
                 name="experienceDate"
                 placeholder="Data"
-                className="w-3/10 h-12 border mb-10 ml-5 pl-5 rounded-md"
+                className="w-3/10 h-12 border mb-10 ml-5 pl-5 rounded-md outline-0 border-gray-300 placeholder:text-gray-400 text-gray-500"
               />
             </div>
             <div className="flex w-9/10 h-auto mb-5">
@@ -231,7 +231,7 @@ export default function AddTopics() {
                 }}
                 onChange={handleChange}
                 defaultValue={""}
-                className="block w-10/10 border mb-5 pb-5 pt-3 pl-5 rounded-md overflow-hidden"
+                className="block w-10/10 border mb-5 pb-5 pt-3 pl-5 rounded-md overflow-hidden outline-0 border-gray-300 placeholder:text-gray-400 text-gray-500"
                 name="experienceDescription"
                 id="txtArea"
               />
@@ -241,9 +241,8 @@ export default function AddTopics() {
             type="text"
             name="education"
             placeholder="Your education"
-            className="w-9/10 h-12 border mb-5 pl-5 rounded-md"
+            className="w-9/10 h-12 border mb-5 pl-5 rounded-md outline-0 border-gray-300 placeholder:text-gray-400 text-gray-500"
             />
-            <label htmlFor="txtArea">Skills:</label>
             <textarea
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
@@ -256,7 +255,8 @@ export default function AddTopics() {
             }}
             onChange={handleChange}
             name="skills"
-            className="w-9/10 h-12 border mb-5 pl-5 rounded-md">
+            placeholder="Your skills"
+            className="w-9/10 h-12 border-2 mb-5 pl-5 rounded-md outline-0 border-gray-300 placeholder:text-gray-400 text-gray-500">
             </textarea>
           </div>
         </section>
@@ -270,13 +270,13 @@ export default function AddTopics() {
   ))}
         </select>
         <div className="ml-3 flex">
-            <p>Font-Size:</p>
+            <p className="text-gray-400">Font-Size:</p>
             <input
             onChange={handleFontSizeChange}
             type="text"
             name="fontSize"
             defaultValue={"12px"}
-            className="border-b border-gray-300 pl-5 outline-0 mb-2 ml-2 w-3/10"
+            className="border-b border-gray-300 pl-5 outline-0 mb-2 ml-2 w-3/10 placeholder:text-gray-400 text-gray-500"
             />
         </div>
         </div>
