@@ -12,6 +12,12 @@ import { TbSettingsPlus } from "react-icons/tb";
 import { FaTrashAlt } from "react-icons/fa";
 import { CiCirclePlus } from "react-icons/ci";
 import { text } from "stream/consumers";
+import generatePDF, { Margin } from 'react-to-pdf';
+import { Options } from 'react-to-pdf';
+import jsPDF from 'jspdf';
+import axios from "axios";
+import { Interface } from "readline";
+import { RiFileCheckFill } from "react-icons/ri";
 
 export default function AddTopics() {
   // State
@@ -43,6 +49,7 @@ export default function AddTopics() {
   const [textColor, setTextColor] = useState({
     colorText: "#000",
   });
+
 
   // Functions
   const handleChange = (e: any) => {
@@ -173,6 +180,33 @@ export default function AddTopics() {
       projects: "",
     })
   }
+  const [modalSuccess, setModalSuccess] = useState(false)
+
+  const handleSave = () => {
+    axios.post("http://localhost:3001/curriculum", about)
+    .then(() => setModalSuccess(true))
+    .catch((error) => console.log(error))
+  }
+  const handleShowModal = () => {
+    if (modalSuccess === true) {
+      setTimeout(() => {handleDeleteModal()}, 3000)
+      return (
+        <div>
+          <div id="modalSuccess" className="absolute top-[20%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-[200px] w-[300px] gap-1 bg-white flex flex-col justify-center items-center border-dashed border-2 border-gray-300 rounded-2xl text-center">
+              <h1 className="text-2xl font-bold text-gray-400">Success</h1>
+              <RiFileCheckFill size={50} color="#74e839" />
+              <p className="text-gray-500">Your Curriculum has been saved successfully</p>
+          </div>
+        </div>
+      )
+    } 
+  }
+  const handleDeleteModal = () => {
+    document.getElementById("modalSuccess")?.remove()
+    setModalSuccess(false)
+  }
+  console.log(modalSuccess)
+
 
   const [count2, setCount2] = useState(0)
   const hiddenClassObj = () => {
@@ -292,11 +326,32 @@ function handleAddGit() {
   setCountGit(countGit - 1)
 }
 
-  
+const customization: Options = {
+  method: "save",
+  page: {
+    // Margin: Medium, Large, XLarge
+    // format: "a4', "legal", "letter", "a0", "a1", "a2", "a3", "a4", "a5", "a6",
+    format: "A4",
+    // orientation: "landscape", 
+    orientation: "portrait",
+  },
+  canvas: {
+    // default is 'image/jpeg' for better size performance
+    mimeType: 'image/png',
+    qualityRatio: 1
+ },
+ 
+};
+
+const targetRef = () => document.getElementById('pdfElement')!;
+const handleDownload = () => {
+  generatePDF(targetRef, customization)
+}
     return (
         <>
-        <div className="flex w-screen h-auto">
-        <section id="main" className="flex flex-col w-1/2 max-h-[100vh] pt-50 justify-center items-center overflow-y-scroll">
+        <div className="flex h-screen w-screen max-md:block max-md:overflow-y-scroll">
+          {handleShowModal()}
+        <section id="main" className="flex flex-col w-1/2 max-h-[100vh] pt-50 justify-center items-center overflow-y-scroll max-md:w-full">
           <div id="about" className="bg-white flex flex-col w-9/10 h-auto border border-gray-500 justify-center items-center mb-2 rounded-md mt-130">
             <input
             onChange={handleChange}
@@ -451,9 +506,12 @@ function handleAddGit() {
             className="w-9/10 h-12 border mb-5 pl-5 rounded-md outline-0 border-gray-300 placeholder:text-gray-400 text-gray-500"
             />
           </div>
+          <div className="md:hidden pb-10 flex itens-center justify-center">
+                <h1 className="text-2xl font-bold">Customization</h1>
+          </div>
         </section>
-        <div className=" w-1/2 h-screen fixed top-15 left-1/2">
-        <div className="flex w-8/10d h-[30px] border-b border-gray-300">
+        <div className="md:w-1/2 max-md:w-full">
+        <div className="flex w-10/10 h-[30px] border-b border-gray-300">
         <select className="outline-0" onChange={handleFontChange} >
         {Object.keys(font).map((fontName, index) => (
     <option key={index} style={{fontFamily: fontName}} value={fontName}>
@@ -472,9 +530,9 @@ function handleAddGit() {
             />
         </div>
         </div>
-            <div style={{ fontFamily: fontFamily.fontFamily, fontSize: textSize.fontSize }} id="cv" className="flex flex-col mt-10 ml-30 flex-wrap w-[21.59rem] h-[29.7rem] shadow-lg items-center">
+            <div id="cv" style={{ fontFamily: fontFamily.fontFamily, fontSize: textSize.fontSize}} className="flex flex-col mt-10 ml-30 flex-wrap w-[21.59rem] h-[29.7rem] shadow-lg items-center">
               <div style={{ backgroundColor: color.color1 }} className="h-[29rem] w-[8px] mt-1"></div>
-              <div className="h-auto mt-3 w-9/10 items-center">
+              <div className="h-10/20 mt-3 w-9/10 items-center">
                   <p style={{ color: textColor.colorText }} className="text-1xl font-bold">{about.name}</p>
                   <div className="flex justify-between flex-wrap">
                   <div className="flex items-center">
@@ -560,11 +618,17 @@ function handleAddGit() {
                   </div>
               </div>
             </div>
+            <section className="mt-5 w-10/10 h-12 max-md:flex max-md:justify-center ">
+                <button onClick={handleDownload} className="w-[100px] h-[40px] border-3 border-green-400 rounded-md float-end max-md:mr-5 md:mr-50 font-bold text-green-400 cursor-pointer">Download</button>
+                <button className="w-[100px] h-[40px] border-3 border-blue-400 rounded-md float-end mr-5 font-bold text-blue-500 cursor-pointer">Preview</button>
+                <button onClick={handleClear} className="w-[100px] h-[40px] border-3 border-red-400 rounded-md float-end mr-5 font-bold text-red-400 cursor-pointer">Clear</button>
+                <button onClick={handleSave} className="w-[100px] h-[40px] border-3 border-green-400 rounded-md float-end mr-5 font-bold text-green-400 cursor-pointer">Save</button>
+            </section>
             <div>
             </div>
-            <div className="fixed top-[90px] right-0 h-[100vh] w-[10rem]">
-            <div className="flex flex-col items-center h-4/10">
-            <div className="flex flex-col items-center">
+            <div className="fixed md:top-[90px] right-0 md:h-[100vh] max-md:h-[150px] max-md:mt-[50px] md:w-[10rem] max-md:w-full max-md:relative">
+            <div className="flex max:-md:justify-center md:flex-col items-center h-4/10">
+            <div className="flex max-md:mr-3 flex-col items-center">
             <p className="text-1xl">Color Lines</p>
             <input onChange={handleColorChange} name="color1" type="color" id="color" value={color.color1} className="color-input w-[50px] h-[50px] cursor-pointer" />
             <input onChange={handleColorChange} style={{ color: color.color1, borderColor: color.color1 }} name="color1" defaultValue={color.color1} type="text" className="w-5/10 border-b outline-0" />
@@ -576,15 +640,97 @@ function handleAddGit() {
             </div>
             </div>
             </div>
-            <section className="mt-5 w-10/10 h-12">
-                <button className="w-[100px] h-[40px] border-3 border-green-400 rounded-md float-end mr-5 font-bold text-green-400 cursor-pointer">Download</button>
-                <button className="w-[100px] h-[40px] border-3 border-blue-400 rounded-md float-end mr-5 font-bold text-blue-500 cursor-pointer">Preview</button>
-                <button onClick={handleClear} className="w-[100px] h-[40px] border-3 border-red-400 rounded-md float-end mr-5 font-bold text-red-400 cursor-pointer">Clear</button>
-            </section>
+            </div>
         </div>
-        </div>
+        <div id="pdfElement" style={{ fontFamily: fontFamily.fontFamily, fontSize: textSize.fontSize}} className="flex flex-col mt-10 h-[100vh] w-[100vh] flex-wrap shadow-lg items-center">
+              <div style={{ backgroundColor: color.color1 }} className="h-[100vh] w-[8px] mt-1"></div>
+              <div className="h-10/20 mt-3 w-9/10 items-center">
+                  <p style={{ color: textColor.colorText }} className="text-2xl font-bold">{about.name}</p>
+                  <div className="flex justify-between flex-wrap">
+                  <div className="flex items-center">
+                  {renderLocation()}
+                  <p className="ml-1 text-[0.8rem]">{about.adress}</p>
+                  </div>
+                  <div className="flex">
+                  {renderEmail()}
+                  <p className="ml-1 text-[0.8rem]">{about.email}</p>
+                  </div>
+                  <div className="flex items-center">
+                  {renderPhone()}
+                  <p className="ml-1 text-[0.8rem]">{about.telephone}</p>
+                  </div>
+                  <div className="flex items-center">
+                  {renderLinkedin()}
+                  <p className="ml-1 text-[0.8rem]">{about.linkedin}</p>
+                  </div>
+                  <div className="flex items-center">
+                  {renderGithub()}
+                  <p className="ml-1 text-[0.8rem]">{about.github}</p>
+                  </div>
+                  </div>
+                  <div className="flex flex-col justify-between">
+                  <div className="flex items-center">
+                  <div style={{ backgroundColor: color.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
+                  <p style={{ color: textColor.colorText }} className="text-1xl font-bold">Objective</p>
+                  </div>
+                  <p className="text-[0.8rem]">{about.objective}</p>
+                  <div className="flex items-center">
+                  <div style={{ backgroundColor: color.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
+                  <p style={{ color: textColor.colorText }} className="text-1xl font-bold">Experience</p>
+                  </div>
+                  <div className="flex-wrap">
+                  <div className="flex justify-between">
+                  <p className="text-[0.8rem]">{about.experience}</p>
+                  <p className="text-[0.8rem]">{about.experienceDate}</p>
+                  </div>
+                  </div>
+                  <div className="flex flex-col ml-3 w-auto">
+                    <ul>
+                    {about.experienceDescription.split('\n').map((item, index) => (
+                    <li key={index} className="text-[0.8rem] flex items-center">
+                    <span className="mr-1">•</span>
+                    {item}
+                    </li>
+                    ))}
+                    </ul>
+                  </div>
+                  <div id="containerEdu">
+                  <div className="flex items-center">
+                  <div style={{ backgroundColor: color.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
+                  <p style={{ color: textColor.colorText }} className="text-1xl font-bold">Education</p>
+                  </div>
+                  <p className="text-[0.8rem]">{about.education}</p>
+                  <div className="flex items-center">
+                  <div style={{ backgroundColor: color.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
+                  <p style={{ color: textColor.colorText }} className="text-1xl font-bold">Skills</p>
+                  </div>
+                  <div className="flex flex-col ml-3 w-auto">
+                    <ul>
+                    {about.skills.split('\n').map((item, index) => (
+                    <li key={index} className="text-[0.8rem] flex items-center">
+                    <span className="mr-1">•</span>
+                    {item}
+                    </li>
+                    ))}
+                    </ul>
+                  </div>
+                  <div className="flex items-center">
+                  <div style={{ backgroundColor: color.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
+                  <p style={{ color: textColor.colorText }} className="text-1xl font-bold">Languages</p>
+                  </div>
+                  <p className="text-[0.8rem]">{about.languages}</p>
+                  <div className="flex items-center">
+                  <div style={{ backgroundColor: color.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
+                  <p style={{ color: textColor.colorText }} className="text-1xl font-bold">Projects</p>
+                  <div>
+                  </div>
+                  </div>
+                  <p className="text-[0.8rem]">{about.projects}</p>
+                  </div>
+                  </div>
+              </div>
+            </div>
         </>
     );
 }
-
 // Preview Button
