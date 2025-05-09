@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const curriculumSchema = new Schema({
@@ -17,7 +17,10 @@ const curriculumSchema = new Schema({
     skills: String,
     languages: String,
     projects: String,
+    color1: String,
+    colorText: String,
+    fontFamily: String,
     data: {type: Date, default: Date.now}
 })
 
-module.exports = mongoose.model("curriculum", curriculumSchema)
+export default mongoose.model("curriculum", curriculumSchema)

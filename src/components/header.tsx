@@ -1,17 +1,62 @@
+'use client';
+
 import Link from "next/link";
+import { IoMenu } from "react-icons/io5";
+import { GiPolarBear } from "react-icons/gi";
+import { VscGithubProject } from "react-icons/vsc";
+import { PiReadCvLogo } from "react-icons/pi";
+import { TiHomeOutline } from "react-icons/ti";
+import { RiLogoutCircleLine } from "react-icons/ri";
+import { useState } from "react";
 
 export default function Header() {
+    const [count, setCount] = useState(0);
+    const handleShowSideBar = () => {
+        const sideBar = document.getElementById("sideBar");
+        if (sideBar){
+            sideBar.style.height = "100vh";
+            sideBar.style.transition = "height 0.5s";
+            setCount(count + 1);
+        }
+        if (sideBar && count === 1){
+            sideBar.style.height = "65px";
+            setCount(count - 1);
+        }
+    }
+
+  const handleLogout = () => {
+      localStorage.clear();
+  };
+
     return (
         <>
-            <div className="bg-blue-400 text-white flex justify-between items-center border border-gray-400 w-screen h-[50px]">
+        <div id="sideBar" className="flex flex-col h-[65px] fixed w-[70px] gap-10 items-center">
+            <IoMenu onClick={handleShowSideBar} className="mt-3 absolute" size={40} color="#000" />
+            <TiHomeOutline className="mt-20 hover:rotate-45 transition-ease-in duration-300 hover:size-[50px]" size={35} color="#000" />
+            <VscGithubProject className="mt-3 hover:rotate-45 transition-ease-in duration-300 hover:size-[50px]" size={35} color="#000" />
+            <PiReadCvLogo  className="mt-3 hover:rotate-45 transition-ease-in duration-300 hover:size-[50px]" size={35} color="#000" />
+            <RiLogoutCircleLine onClick={handleLogout} className="mt-70 hover:rotate-45 transition-ease-in duration-300 hover:size-[50px]" size={35} color="#000" />
+        </div>
+            <div className=" text-gray-400 flex justify-between items-center w-screen h-[65px]">
+                <div className="ml-20">
                 <Link href={"/"}>
-                    <h1 className="text-4xl font-bold ml-5">CvMaker</h1>
+                <GiPolarBear size={50} color="#000" />
                 </Link>
-                <div className="userLog flex mr-3">
-                <h3 className="mr-3">Login</h3>
-                <h3 className="">Register</h3>
+                </div>
+                <div className="flex mr-3">
+                <div className="text-center">
+                <Link href={"/login"}>
+                <h3 className="mr-3 text-black font-bold p-3">Log in</h3>
+                </Link>
+                </div>
+                <div className="bg-[#202020] rounded-[40px] w-[100px] text-center">
+                <Link href={"/register"}>
+                <h3 className="text-white font-bold p-3">Sign up</h3>
+                </Link>
+                </div>
                 </div>
             </div>
+            {handleLogout()}
         </>
     );
 }

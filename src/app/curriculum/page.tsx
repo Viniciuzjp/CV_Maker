@@ -1,5 +1,5 @@
 'use client';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { HiOutlineMail} from "react-icons/hi";
 import { FaLocationDot, FaPlus } from "react-icons/fa6";
 import { BsFillTelephoneFill } from "react-icons/bs";
@@ -11,12 +11,9 @@ import { FaRegEyeSlash } from "react-icons/fa6";
 import { TbSettingsPlus } from "react-icons/tb";
 import { FaTrashAlt } from "react-icons/fa";
 import { CiCirclePlus } from "react-icons/ci";
-import { text } from "stream/consumers";
 import generatePDF, { Margin } from 'react-to-pdf';
 import { Options } from 'react-to-pdf';
-import jsPDF from 'jspdf';
 import axios from "axios";
-import { Interface } from "readline";
 import { RiFileCheckFill } from "react-icons/ri";
 
 export default function AddTopics() {
@@ -37,19 +34,10 @@ export default function AddTopics() {
     skills: "",
     languages: "",
     projects: "",
-  });
-
-  const [color, setColor] = useState({
     color1: "#87CEEB",
-    color2: "",
-    color3: "",
-    color4: "",
-    color5: ""
-  });
-  const [textColor, setTextColor] = useState({
     colorText: "#000",
+    fontFamily: " "
   });
-
 
   // Functions
   const handleChange = (e: any) => {
@@ -60,12 +48,12 @@ export default function AddTopics() {
   }
 
   const handleColorChange = (e: any) => {
-    setColor({
-      ...color,
+    setAbout({
+      ...about,
       [e.target.name]: e.target.value
     })
-    setTextColor({
-      ...textColor,
+    setAbout({
+      ...about,
       colorText: e.target.value
     })
   }
@@ -142,13 +130,9 @@ export default function AddTopics() {
     lucidaCalligraphy: "lucidaCalligraphy"
   })
 
-  const [fontFamily, setFontFamily] = useState({
-    fontFamily: "",
-  });
-
   const handleFontChange = (e: any) => {
-    setFontFamily({
-      ...fontFamily, fontFamily: e.target.value
+    setAbout({
+      ...about, fontFamily: e.target.value
     })
   }
   
@@ -178,15 +162,26 @@ export default function AddTopics() {
       skills: "",
       languages: "",
       projects: "",
+      color1: "#87CEEB",
+      colorText: "#000",
+      fontFamily: " "
     })
   }
   const [modalSuccess, setModalSuccess] = useState(false)
 
+
   const handleSave = () => {
+
     axios.post("http://localhost:3001/curriculum", about)
     .then(() => setModalSuccess(true))
     .catch((error) => console.log(error))
   }
+  const [user, setUser] = useState([])
+  useEffect(()=> {
+    axios.get("http://localhost:3001/login")
+    .then((response) => setUser(response.data))
+  })
+  console.log(user)
   const handleShowModal = () => {
     if (modalSuccess === true) {
       setTimeout(() => {handleDeleteModal()}, 3000)
@@ -205,8 +200,6 @@ export default function AddTopics() {
     document.getElementById("modalSuccess")?.remove()
     setModalSuccess(false)
   }
-  console.log(modalSuccess)
-
 
   const [count2, setCount2] = useState(0)
   const hiddenClassObj = () => {
@@ -351,8 +344,8 @@ const handleDownload = () => {
         <>
         <div className="flex h-screen w-screen max-md:block max-md:overflow-y-scroll">
           {handleShowModal()}
-        <section id="main" className="flex flex-col w-1/2 max-h-[100vh] pt-50 justify-center items-center overflow-y-scroll max-md:w-full">
-          <div id="about" className="bg-white flex flex-col w-9/10 h-auto border border-gray-500 justify-center items-center mb-2 rounded-md mt-130">
+        <section id="main" className="flex bg-gray-100 flex-col w-1/2 max-h-[100vh] pt-50 justify-center items-center overflow-y-scroll max-md:w-full">
+          <div id="about" className="bg-white flex flex-col w-9/10 h-auto justify-center items-center mb-2 shadow-md mt-130">
             <input
             onChange={handleChange}
             type="text"
@@ -417,7 +410,7 @@ const handleDownload = () => {
             <FaTrashAlt onClick={handleDeleteGit} style={{position: "relative", right: "40px", top: "13px"}} size={25} color="gray" />
             </div>
           </div>
-          <div id="objective" className="flex flex-col border border-gray-400 pt-5 w-9/10 h-auto justify-center items-center mt-10 mb-10 rounded-md flex-grow placeholder:text-gray-400 text-gray-500">
+          <div id="objective" className="flex flex-col bg-white shadow-md pt-5 w-9/10 h-auto justify-center items-center mt-10 mb-10  flex-grow placeholder:text-gray-400 text-gray-500">
           <div className="flex justify-between">
           <TbDeviceImacPlus size={30} color="gray" className="relative right-60 mb-5" />
         <FaRegEyeSlash id="eyeIcon2" onClick={hiddenClassObj} size={30} color="black" className="relative left-60"/>
@@ -464,7 +457,7 @@ const handleDownload = () => {
               />
             </div>
             </div>
-            <div id="education" className="flex flex-col border border-gray-400 pt-5 w-9/10 h-auto justify-center items-center mt-10 mb-20 rounded-md flex-grow placeholder:text-gray-400 text-gray-500">
+            <div id="education" className="flex bg-white flex-col shadow-md border-gray-400 pt-5 w-9/10 h-auto justify-center items-center mt-10 mb-20 flex-grow placeholder:text-gray-400 text-gray-500">
             <div className="flex justify-between mb-5">
             <MdOutlineLibraryBooks size={30} color="gray" className="relative right-60" />
             <FaRegEyeSlash id="eyeIcon" onClick={hiddenClassEdu} size={30} color="black" className="relative left-60"/>
@@ -511,7 +504,7 @@ const handleDownload = () => {
           </div>
         </section>
         <div className="md:w-1/2 max-md:w-full">
-        <div className="flex w-10/10 h-[30px] border-b border-gray-300">
+        <div className="flex w-10/10 h-[30px] shadow-md">
         <select className="outline-0" onChange={handleFontChange} >
         {Object.keys(font).map((fontName, index) => (
     <option key={index} style={{fontFamily: fontName}} value={fontName}>
@@ -530,10 +523,10 @@ const handleDownload = () => {
             />
         </div>
         </div>
-            <div id="cv" style={{ fontFamily: fontFamily.fontFamily, fontSize: textSize.fontSize}} className="flex flex-col mt-10 ml-30 flex-wrap w-[21.59rem] h-[29.7rem] shadow-lg items-center">
-              <div style={{ backgroundColor: color.color1 }} className="h-[29rem] w-[8px] mt-1"></div>
+            <div id="cv" style={{ fontFamily: about.fontFamily, fontSize: textSize.fontSize}} className="flex flex-col mt-10 ml-30 flex-wrap w-[21.59rem] h-[29.7rem] shadow-2xl items-center">
+              <div style={{ backgroundColor: about.color1 }} className="h-[29rem] w-[8px] mt-1"></div>
               <div className="h-10/20 mt-3 w-9/10 items-center">
-                  <p style={{ color: textColor.colorText }} className="text-1xl font-bold">{about.name}</p>
+                  <p style={{ color: about.colorText }} className="text-1xl font-bold">{about.name}</p>
                   <div className="flex justify-between flex-wrap">
                   <div className="flex items-center">
                   {renderLocation()}
@@ -558,13 +551,13 @@ const handleDownload = () => {
                   </div>
                   <div className="flex flex-col justify-between">
                   <div className="flex items-center">
-                  <div style={{ backgroundColor: color.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
-                  <p style={{ color: textColor.colorText }} className="mt-3 text-[0.7rem] font-bold">Objective</p>
+                  <div style={{ backgroundColor: about.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
+                  <p style={{ color: about.colorText }} className="mt-3 text-[0.7rem] font-bold">Objective</p>
                   </div>
                   <p className="text-[0.5rem]">{about.objective}</p>
                   <div className="flex items-center">
-                  <div style={{ backgroundColor: color.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
-                  <p style={{ color: textColor.colorText }} className="mt-3 text-[0.7rem] font-bold">Experience</p>
+                  <div style={{ backgroundColor: about.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
+                  <p style={{ color: about.colorText }} className="mt-3 text-[0.7rem] font-bold">Experience</p>
                   </div>
                   <div className="flex-wrap">
                   <div className="flex justify-between">
@@ -584,13 +577,13 @@ const handleDownload = () => {
                   </div>
                   <div id="containerEdu">
                   <div className="flex items-center">
-                  <div style={{ backgroundColor: color.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
-                  <p style={{ color: textColor.colorText }} className="mt-3 text-[0.7rem] font-bold">Education</p>
+                  <div style={{ backgroundColor: about.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
+                  <p style={{ color:  about.colorText }} className="mt-3 text-[0.7rem] font-bold">Education</p>
                   </div>
                   <p className="text-[0.5rem]">{about.education}</p>
                   <div className="flex items-center">
-                  <div style={{ backgroundColor: color.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
-                  <p style={{ color: textColor.colorText }} className="mt-3 text-[0.7rem] font-bold">Skills</p>
+                  <div style={{ backgroundColor: about.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
+                  <p style={{ color: about.colorText }} className="mt-3 text-[0.7rem] font-bold">Skills</p>
                   </div>
                   <div className="flex flex-col ml-3 w-auto">
                     <ul>
@@ -603,13 +596,13 @@ const handleDownload = () => {
                     </ul>
                   </div>
                   <div className="flex items-center">
-                  <div style={{ backgroundColor: color.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
-                  <p style={{ color: textColor.colorText }} className="mt-3 text-[0.7rem] font-bold">Languages</p>
+                  <div style={{ backgroundColor: about.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
+                  <p style={{ color: about.colorText }} className="mt-3 text-[0.7rem] font-bold">Languages</p>
                   </div>
                   <p className="text-[0.5rem]">{about.languages}</p>
                   <div className="flex items-center">
-                  <div style={{ backgroundColor: color.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
-                  <p style={{ color: textColor.colorText }} className="mt-3 text-[0.7rem] font-bold">Projects</p>
+                  <div style={{ backgroundColor: about.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
+                  <p style={{ color: about.colorText }} className="mt-3 text-[0.7rem] font-bold">Projects</p>
                   <div>
                   </div>
                   </div>
@@ -630,22 +623,22 @@ const handleDownload = () => {
             <div className="flex max:-md:justify-center md:flex-col items-center h-4/10">
             <div className="flex max-md:mr-3 flex-col items-center">
             <p className="text-1xl">Color Lines</p>
-            <input onChange={handleColorChange} name="color1" type="color" id="color" value={color.color1} className="color-input w-[50px] h-[50px] cursor-pointer" />
-            <input onChange={handleColorChange} style={{ color: color.color1, borderColor: color.color1 }} name="color1" defaultValue={color.color1} type="text" className="w-5/10 border-b outline-0" />
+            <input onChange={handleColorChange} name="color1" type="color" id="color" value={about.color1} className="color-input w-[50px] h-[50px] cursor-pointer" />
+            <input onChange={handleColorChange} style={{ color: about.color1, borderColor: about.color1 }} name="color1" defaultValue={about.color1} type="text" className="w-5/10 border-b outline-0" />
             </div>
             <div className="flex flex-col items-center">
             <p className="text-1xl">Color Text</p>
-            <input onChange={handleColorChange} name="colorText" type="color" id="color" value={textColor.colorText} className="color-input w-[50px] h-[50px] cursor-pointer" />
-            <input onChange={handleColorChange} style={{ color: textColor.colorText, borderColor: textColor.colorText }} name="colorText" defaultValue={textColor.colorText} type="text" className="w-5/10 border-b outline-0" />
+            <input onChange={handleColorChange} name="colorText" type="color" id="color" value={about.colorText} className="color-input w-[50px] h-[50px] cursor-pointer" />
+            <input onChange={handleColorChange} style={{ color: about.colorText, borderColor: about.colorText }} name="colorText" defaultValue={about.colorText} type="text" className="w-5/10 border-b outline-0" />
             </div>
             </div>
             </div>
             </div>
         </div>
-        <div id="pdfElement" style={{ fontFamily: fontFamily.fontFamily, fontSize: textSize.fontSize}} className="flex flex-col mt-10 h-[100vh] w-[100vh] flex-wrap shadow-lg items-center">
-              <div style={{ backgroundColor: color.color1 }} className="h-[100vh] w-[8px] mt-1"></div>
+        <div id="pdfElement" style={{ fontFamily: about.fontFamily, fontSize: textSize.fontSize}} className="flex flex-col mt-10 h-[100vh] w-[100vh] flex-wrap shadow-lg items-center">
+              <div style={{ backgroundColor: about.color1 }} className="h-[100vh] w-[8px] mt-1"></div>
               <div className="h-10/20 mt-3 w-9/10 items-center">
-                  <p style={{ color: textColor.colorText }} className="text-2xl font-bold">{about.name}</p>
+                  <p style={{ color: about.colorText }} className="text-2xl font-bold">{about.name}</p>
                   <div className="flex justify-between flex-wrap">
                   <div className="flex items-center">
                   {renderLocation()}
@@ -670,13 +663,13 @@ const handleDownload = () => {
                   </div>
                   <div className="flex flex-col justify-between">
                   <div className="flex items-center">
-                  <div style={{ backgroundColor: color.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
-                  <p style={{ color: textColor.colorText }} className="text-1xl font-bold">Objective</p>
+                  <div style={{ backgroundColor: about.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
+                  <p style={{ color: about.colorText }} className="text-1xl font-bold">Objective</p>
                   </div>
                   <p className="text-[0.8rem]">{about.objective}</p>
                   <div className="flex items-center">
-                  <div style={{ backgroundColor: color.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
-                  <p style={{ color: textColor.colorText }} className="text-1xl font-bold">Experience</p>
+                  <div style={{ backgroundColor: about.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
+                  <p style={{ color: about.colorText }} className="text-1xl font-bold">Experience</p>
                   </div>
                   <div className="flex-wrap">
                   <div className="flex justify-between">
@@ -696,13 +689,13 @@ const handleDownload = () => {
                   </div>
                   <div id="containerEdu">
                   <div className="flex items-center">
-                  <div style={{ backgroundColor: color.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
-                  <p style={{ color: textColor.colorText }} className="text-1xl font-bold">Education</p>
+                  <div style={{ backgroundColor: about.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
+                  <p style={{ color: about.colorText }} className="text-1xl font-bold">Education</p>
                   </div>
                   <p className="text-[0.8rem]">{about.education}</p>
                   <div className="flex items-center">
-                  <div style={{ backgroundColor: color.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
-                  <p style={{ color: textColor.colorText }} className="text-1xl font-bold">Skills</p>
+                  <div style={{ backgroundColor: about.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
+                  <p style={{ color: about.colorText }} className="text-1xl font-bold">Skills</p>
                   </div>
                   <div className="flex flex-col ml-3 w-auto">
                     <ul>
@@ -715,13 +708,13 @@ const handleDownload = () => {
                     </ul>
                   </div>
                   <div className="flex items-center">
-                  <div style={{ backgroundColor: color.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
-                  <p style={{ color: textColor.colorText }} className="text-1xl font-bold">Languages</p>
+                  <div style={{ backgroundColor: about.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
+                  <p style={{ color: about.colorText }} className="text-1xl font-bold">Languages</p>
                   </div>
                   <p className="text-[0.8rem]">{about.languages}</p>
                   <div className="flex items-center">
-                  <div style={{ backgroundColor: color.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
-                  <p style={{ color: textColor.colorText }} className="text-1xl font-bold">Projects</p>
+                  <div style={{ backgroundColor: about.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
+                  <p style={{ color: about.colorText }} className="text-1xl font-bold">Projects</p>
                   <div>
                   </div>
                   </div>
