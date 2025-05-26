@@ -444,8 +444,8 @@ const handleDownload = () => {
           </div>
           <div id="objective" className="flex flex-col bg-white shadow-md pt-5 w-9/10 h-auto justify-center items-center mt-10 mb-10  flex-grow placeholder:text-gray-400 text-gray-500">
           <div className="flex justify-between">
-          <TbDeviceImacPlus size={30} color="gray" className="relative right-60 mb-5" />
-        <FaRegEyeSlash id="eyeIcon2" onClick={hiddenClassObj} size={30} color="black" className="relative left-60"/>
+          <TbDeviceImacPlus size={30} color="gray" className="relative right-60 mb-5 max-md:hidden" />
+        <FaRegEyeSlash id="eyeIcon2" onClick={hiddenClassObj} size={30} color="black" className="relative left-60 max-md:hidden"/>
           </div>
             <input
               id="inputObjective"
@@ -493,8 +493,8 @@ const handleDownload = () => {
             </div>
             <div id="education" className="flex bg-white flex-col shadow-md border-gray-400 pt-5 w-9/10 h-auto justify-center items-center mt-10 mb-20 flex-grow placeholder:text-gray-400 text-gray-500">
             <div className="flex justify-between mb-5">
-            <MdOutlineLibraryBooks size={30} color="gray" className="relative right-60" />
-            <FaRegEyeSlash id="eyeIcon" onClick={hiddenClassEdu} size={30} color="black" className="relative left-60"/>
+            <MdOutlineLibraryBooks size={30} color="gray" className="relative right-60 max-md:hidden" />
+            <FaRegEyeSlash id="eyeIcon" onClick={hiddenClassEdu} size={30} color="black" className="relative left-60 max-md:hidden"/>
             </div>
             <input
             id="inputEducation"
