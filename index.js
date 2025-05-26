@@ -12,7 +12,7 @@ route.use(express.urlencoded({extended: true}))
 route.use(express.json())
 
 route.use(session({
-    secret: 'keyboard cat',
+    secret: 'secret',
     resave: false,
     saveUninitialized: true
 }))

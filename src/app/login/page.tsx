@@ -42,7 +42,6 @@ export default function Register() {
         .then((response) => setUser(response.data))
         .catch((error) => console.log(error))
     }
-    console.log(user)
 
     return (
         <>

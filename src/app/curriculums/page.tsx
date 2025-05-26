@@ -31,7 +31,7 @@ export default function Curriculums() {
         axios.get("http://localhost:3001")
         .then((response) => setCurriculums(response.data))
         .catch((error) => console.log(error))
-    })
+    },)
 
       const [mensagem, setMensagem] = useState('');
       const mensagens = [

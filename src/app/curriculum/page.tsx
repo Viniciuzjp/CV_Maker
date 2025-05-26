@@ -15,6 +15,7 @@ import generatePDF, { Margin } from 'react-to-pdf';
 import { Options } from 'react-to-pdf';
 import axios from "axios";
 import { RiFileCheckFill } from "react-icons/ri";
+import { FaCheck } from "react-icons/fa";
 
 export default function AddTopics() {
   // State
@@ -35,7 +36,7 @@ export default function AddTopics() {
     languages: "",
     projects: "",
     color1: "#87CEEB",
-    colorText: "#000",
+    colorText: "#000000",
     fontFamily: " "
   });
 
@@ -45,6 +46,17 @@ export default function AddTopics() {
       ...about,
       [e.target.name]: e.target.value
     })
+    if (about.name == "") {
+      var Topic = document.getElementById("Topic")
+      if (Topic) {
+        Topic.style.display = "none"
+      }
+    }else {
+      let Topic = document.getElementById("Topic")
+      if (Topic) {
+        Topic.style.display = "flex"
+      }
+    }
   }
 
   const handleColorChange = (e: any) => {
@@ -167,8 +179,8 @@ export default function AddTopics() {
       fontFamily: " "
     })
   }
-  const [modalSuccess, setModalSuccess] = useState(false)
 
+  const [modalSuccess, setModalSuccess] = useState(false)
 
   const handleSave = () => {
 
@@ -180,7 +192,7 @@ export default function AddTopics() {
   useEffect(()=> {
     axios.get("http://localhost:3001/login")
     .then((response) => setUser(response.data))
-  })
+  }, [])
   console.log(user)
   const handleShowModal = () => {
     if (modalSuccess === true) {
@@ -294,6 +306,22 @@ function handleAddLinkedin() {
   setCountLinkd(countLinkd - 1)
 }
 
+const [countLine, setCountLine] = useState(0)
+const handleShowLineCV = () => {
+  const lineCV = document.getElementById("lineCV");
+  const iconCheck = document.getElementById("iconCheck");
+  if (lineCV && iconCheck) {
+    lineCV.style.display = "none";
+    iconCheck.style.color = "green"
+    setCountLine(countLine + 1)
+  }
+  if (lineCV && iconCheck && countLine === 1) {
+    lineCV.style.display = "flex";
+    setCountLine(countLine - 1)
+    iconCheck.style.color = "#6e6e6e"
+  }
+}
+
 const [countGit, setCountGit] = useState(0)
 const handleDeleteGit = () => {
   const GithubElement = document.getElementById("github");
@@ -319,6 +347,7 @@ function handleAddGit() {
   setCountGit(countGit - 1)
 }
 
+
 const customization: Options = {
   method: "save",
   page: {
@@ -342,11 +371,12 @@ const handleDownload = () => {
 }
     return (
         <>
-        <div className="flex h-screen w-screen max-md:block max-md:overflow-y-scroll">
+        <main className="flex h-screen w-screen max-md:block max-md:overflow-y-scroll">
           {handleShowModal()}
         <section id="main" className="flex bg-gray-100 flex-col w-1/2 max-h-[100vh] pt-50 justify-center items-center overflow-y-scroll max-md:w-full">
           <div id="about" className="bg-white flex flex-col w-9/10 h-auto justify-center items-center mb-2 shadow-md mt-130">
             <input
+            id="inputAbout"
             onChange={handleChange}
             type="text"
             name="about"
@@ -354,6 +384,7 @@ const handleDownload = () => {
             className="w-9/10 h-12 text-2xl font-bold border-b mb-5 pl-5 outline-0 border-gray-300 text-gray-400"
              />
             <input
+            id="inputName"
             type="text"
             name="name"
             onChange={handleChange}
@@ -361,6 +392,7 @@ const handleDownload = () => {
             className="w-9/10 h-12 border mb-5 pl-5 rounded-md outline-0 border-gray-300 placeholder:text-gray-400 text-gray-500"
             />
             <input
+            id="adress"
             onChange={handleChange}
             type="text"
             name="adress"
@@ -416,6 +448,7 @@ const handleDownload = () => {
         <FaRegEyeSlash id="eyeIcon2" onClick={hiddenClassObj} size={30} color="black" className="relative left-60"/>
           </div>
             <input
+              id="inputObjective"
               onChange={handleChange}
               type="text"
               name="objective"
@@ -424,6 +457,7 @@ const handleDownload = () => {
             />
             <div className="w-9/10 h-12 flex mb-5">
               <input
+                id="inputExperience"
                 onChange={handleChange}
                 type="text"
                 name="experience"
@@ -463,6 +497,7 @@ const handleDownload = () => {
             <FaRegEyeSlash id="eyeIcon" onClick={hiddenClassEdu} size={30} color="black" className="relative left-60"/>
             </div>
             <input
+            id="inputEducation"
             onChange={handleChange}
             type="text"
             name="education"
@@ -470,6 +505,7 @@ const handleDownload = () => {
             className="w-9/10 h-12 border mb-5 pl-5 rounded-md outline-0 border-gray-300 placeholder:text-gray-400 text-gray-500"
             />
             <textarea
+            id="inputSkills"
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 e.preventDefault();
@@ -485,6 +521,7 @@ const handleDownload = () => {
             className="w-9/10 h-12 border-2 mb-5 pl-5 rounded-md outline-0 border-gray-300 placeholder:text-gray-400 text-gray-500">
             </textarea>
             <input
+            id="inputLanguages"
             type="text"
             onChange={handleChange}
             name="languages"
@@ -492,6 +529,7 @@ const handleDownload = () => {
             className="w-9/10 h-12 border mb-5 pl-5 rounded-md outline-0 border-gray-300 placeholder:text-gray-400 text-gray-500"
             />
             <input
+            id="inputProjects"
             type="text"
             onChange={handleChange}
             name="projects"
@@ -505,7 +543,7 @@ const handleDownload = () => {
         </section>
         <div className="md:w-1/2 max-md:w-full">
         <div className="flex w-10/10 h-[30px] shadow-md">
-        <select className="outline-0" onChange={handleFontChange} >
+        <select name="fontFamily" id="font" className="outline-0" onChange={handleFontChange} >
         {Object.keys(font).map((fontName, index) => (
     <option key={index} style={{fontFamily: fontName}} value={fontName}>
       {fontName}
@@ -523,8 +561,8 @@ const handleDownload = () => {
             />
         </div>
         </div>
-            <div id="cv" style={{ fontFamily: about.fontFamily, fontSize: textSize.fontSize}} className="flex flex-col mt-10 ml-30 flex-wrap w-[21.59rem] h-[29.7rem] shadow-2xl items-center">
-              <div style={{ backgroundColor: about.color1 }} className="h-[29rem] w-[8px] mt-1"></div>
+            <section id="cv" style={{ fontFamily: about.fontFamily, fontSize: textSize.fontSize}} className="flex flex-col mt-10 ml-30 flex-wrap w-[21.59rem] h-[29.7rem] shadow-2xl items-center">
+              <div id="lineCV" style={{ backgroundColor: about.color1 }} className="h-[29rem] w-[8px] mt-1"></div>
               <div className="h-10/20 mt-3 w-9/10 items-center">
                   <p style={{ color: about.colorText }} className="text-1xl font-bold">{about.name}</p>
                   <div className="flex justify-between flex-wrap">
@@ -550,12 +588,12 @@ const handleDownload = () => {
                   </div>
                   </div>
                   <div className="flex flex-col justify-between">
-                  <div className="flex items-center">
+                  <div id="Topic" className="flex items-center">
                   <div style={{ backgroundColor: about.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
                   <p style={{ color: about.colorText }} className="mt-3 text-[0.7rem] font-bold">Objective</p>
                   </div>
                   <p className="text-[0.5rem]">{about.objective}</p>
-                  <div className="flex items-center">
+                  <div id="Topic" className="flex items-center">
                   <div style={{ backgroundColor: about.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
                   <p style={{ color: about.colorText }} className="mt-3 text-[0.7rem] font-bold">Experience</p>
                   </div>
@@ -569,19 +607,19 @@ const handleDownload = () => {
                     <ul>
                     {about.experienceDescription.split('\n').map((item, index) => (
                     <li key={index} className="text-[0.5rem] flex items-center">
-                    <span className="mr-1">•</span>
+                    <span id="Topic" className="mr-1">•</span>
                     {item}
                     </li>
                     ))}
                     </ul>
                   </div>
                   <div id="containerEdu">
-                  <div className="flex items-center">
+                  <div id="Topic" className="flex items-center">
                   <div style={{ backgroundColor: about.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
                   <p style={{ color:  about.colorText }} className="mt-3 text-[0.7rem] font-bold">Education</p>
                   </div>
                   <p className="text-[0.5rem]">{about.education}</p>
-                  <div className="flex items-center">
+                  <div id="Topic" className="flex items-center">
                   <div style={{ backgroundColor: about.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
                   <p style={{ color: about.colorText }} className="mt-3 text-[0.7rem] font-bold">Skills</p>
                   </div>
@@ -589,18 +627,18 @@ const handleDownload = () => {
                     <ul>
                     {about.skills.split('\n').map((item, index) => (
                     <li key={index} className="text-[0.5rem] flex items-center">
-                    <span className="mr-1">•</span>
+                    <span id="Topic" className="mr-1">•</span>
                     {item}
                     </li>
                     ))}
                     </ul>
                   </div>
-                  <div className="flex items-center">
+                  <div id="Topic" className="flex items-center">
                   <div style={{ backgroundColor: about.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
                   <p style={{ color: about.colorText }} className="mt-3 text-[0.7rem] font-bold">Languages</p>
                   </div>
                   <p className="text-[0.5rem]">{about.languages}</p>
-                  <div className="flex items-center">
+                  <div id="Topic" className="flex items-center">
                   <div style={{ backgroundColor: about.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
                   <p style={{ color: about.colorText }} className="mt-3 text-[0.7rem] font-bold">Projects</p>
                   <div>
@@ -610,7 +648,7 @@ const handleDownload = () => {
                   </div>
                   </div>
               </div>
-            </div>
+            </section>
             <section className="mt-5 w-10/10 h-12 max-md:flex max-md:justify-center ">
                 <button onClick={handleDownload} className="w-[100px] h-[40px] border-3 border-green-400 rounded-md float-end max-md:mr-5 md:mr-50 font-bold text-green-400 cursor-pointer">Download</button>
                 <button className="w-[100px] h-[40px] border-3 border-blue-400 rounded-md float-end mr-5 font-bold text-blue-500 cursor-pointer">Preview</button>
@@ -620,7 +658,7 @@ const handleDownload = () => {
             <div>
             </div>
             <div className="fixed md:top-[90px] right-0 md:h-[100vh] max-md:h-[150px] max-md:mt-[50px] md:w-[10rem] max-md:w-full max-md:relative">
-            <div className="flex max:-md:justify-center md:flex-col items-center h-4/10">
+            <div className="flex max:-md:justify-center md:flex-col items-center h-4/10 gap-5">
             <div className="flex max-md:mr-3 flex-col items-center">
             <p className="text-1xl">Color Lines</p>
             <input onChange={handleColorChange} name="color1" type="color" id="color" value={about.color1} className="color-input w-[50px] h-[50px] cursor-pointer" />
@@ -631,12 +669,18 @@ const handleDownload = () => {
             <input onChange={handleColorChange} name="colorText" type="color" id="color" value={about.colorText} className="color-input w-[50px] h-[50px] cursor-pointer" />
             <input onChange={handleColorChange} style={{ color: about.colorText, borderColor: about.colorText }} name="colorText" defaultValue={about.colorText} type="text" className="w-5/10 border-b outline-0" />
             </div>
+            <div className="flex flex-col items-center">
+              <button onClick={handleShowLineCV} className='h-7 w-7 border-2 border-[#aaaaaa] rounded-md flex justify-center items-center'>
+                <FaCheck id="iconCheck" size={20} color="#6e6e6e" />
+              </button>
+              <p className="text-1xl font-bold text-[#aaaaaa]">Mostrar Linha</p>
             </div>
             </div>
             </div>
-        </div>
+            </div>
+        </main>
         <div id="pdfElement" style={{ fontFamily: about.fontFamily, fontSize: textSize.fontSize}} className="flex flex-col mt-10 h-[100vh] w-[100vh] flex-wrap shadow-lg items-center">
-              <div style={{ backgroundColor: about.color1 }} className="h-[100vh] w-[8px] mt-1"></div>
+              <div id="lineCv" style={{ backgroundColor: about.color1 }} className="h-[100vh] w-[8px] mt-1"></div>
               <div className="h-10/20 mt-3 w-9/10 items-center">
                   <p style={{ color: about.colorText }} className="text-2xl font-bold">{about.name}</p>
                   <div className="flex justify-between flex-wrap">
