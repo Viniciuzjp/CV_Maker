@@ -371,9 +371,9 @@ const handleDownload = () => {
 }
     return (
         <>
-        <main className="flex h-screen w-screen max-md:block max-md:overflow-y-scroll">
+        <main className="flex max-md:flex-col h-screen w-screen max-md:block max-md:overflow-y-scroll max-md:overflow-hidden">
           {handleShowModal()}
-        <section id="main" className="flex bg-gray-100 flex-col w-1/2 max-h-[100vh] pt-50 justify-center items-center overflow-y-scroll max-md:w-full">
+        <section id="main" className="flex bg-gray-100 flex-col w-full max-h-[100vh] pt-50 justify-center items-center overflow-y-scroll max-md:max-w-full overflow-fidden">
           <div id="about" className="bg-white flex flex-col w-9/10 h-auto justify-center items-center mb-2 shadow-md mt-130">
             <input
             id="inputAbout"
@@ -541,7 +541,7 @@ const handleDownload = () => {
                 <h1 className="text-2xl font-bold">Customization</h1>
           </div>
         </section>
-        <div className="md:w-1/2 max-md:w-full">
+        <div className="w-full">
         <div className="flex w-10/10 h-[30px] shadow-md">
         <select name="fontFamily" id="font" className="outline-0" onChange={handleFontChange} >
         {Object.keys(font).map((fontName, index) => (
@@ -679,7 +679,7 @@ const handleDownload = () => {
             </div>
             </div>
         </main>
-        <div id="pdfElement" style={{ fontFamily: about.fontFamily, fontSize: textSize.fontSize}} className="flex flex-col mt-10 h-[100vh] w-[100vh] flex-wrap shadow-lg items-center">
+        <div id="pdfElement" style={{ fontFamily: about.fontFamily, fontSize: textSize.fontSize}} className="flex flex-col mt-10 h-[100vh] w-[100vh] flex-wrap shadow-lg items-center hidden">
               <div id="lineCv" style={{ backgroundColor: about.color1 }} className="h-[100vh] w-[8px] mt-1"></div>
               <div className="h-10/20 mt-3 w-9/10 items-center">
                   <p style={{ color: about.colorText }} className="text-2xl font-bold">{about.name}</p>

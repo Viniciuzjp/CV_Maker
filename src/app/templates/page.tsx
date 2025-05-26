@@ -57,45 +57,15 @@ export default function Curriculums() {
         <h2 className="text-3xl font-bold">Currículos Recentes</h2>
         <p className="text-gray-400">veja os curriculos mais recentes</p>
     </div>
+    <div className="w-[90%] m-[0 auto] mt-10">
     {curriculums.length > 0 ? (
       curriculums.map((curriculum) => (
-      <div key={curriculum._id} className="flex flex-col max-h-screen justify-center items-center overflow-y-scroll'">
-        <div style={{ fontFamily: curriculum.fontFamily }} className="flex w-[21.59rem] h-[29.7rem]  shadow-2xl p-3 m-20 text-[0.5rem]">
-          <div style={{ backgroundColor: "black" }} className="h-[28rem] w-[8px] mt-2"></div>
-          <div className="flex flex-col p-2 mt-2 flex-wrap">
-          <h1>{curriculum.name}</h1>
-          <p>{curriculum.adress}</p>
-          <p>{curriculum.email}</p>
-          <p>{curriculum.telephone}</p>
-          <p>{curriculum.linkedin}</p>
-          <p>{curriculum.github}</p>
-          <div className="flex flex-col">
-            <div className="flex">
-              <div style={{ backgroundColor: "black" }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
-              <p style={{ color: curriculum.colorText }} className="mt-3 text-[0.7rem] font-bold">Objective</p>
-            </div>
-              <p className="mb-2">{curriculum.objective}</p>
-              <div className="flex">
-              <div style={{ backgroundColor: "black" }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
-              <p style={{ color: curriculum.colorText }} className="mt-3 text-[0.7rem] font-bold">Experience</p>
-            </div>
-            <div className="flex justify-between">
-              <p className="mb-2">{curriculum.experience}</p>
-              <p>{curriculum.experienceDate}</p>
-            </div>
-            <div className="flex">
-            <span className="mr-1">•</span>
-              <p className="mb-2">{curriculum.experienceDescription}</p>
-            </div>
-          </div>
-          <p>{curriculum.education}</p>
-          <p>{curriculum.skills}</p>
-          <p>{curriculum.languages}</p>
-          <p>{curriculum.projects}</p>
-          <p>{curriculum.color1}</p>
+      <div key={curriculum._id} className="flex">
+        <div className="flex gap-10">
+        <div className="w-[300px] h-[300px] bg-white rounded-lg shadow-md p-4">
         </div>
-        </div>
-        <button className="bg-blue-500 hover:bg-blue-700 mt-[-50px] mb-[70px] text-white font-bold py-2 px-4 rounded">Editar</button>
+        <h1>{curriculum.name}</h1>
+      </div>
       </div>
       ))
     ) : (
@@ -108,6 +78,7 @@ export default function Curriculums() {
         </div>
       </div>
     )}
+    </div>
   </div>
         </>
     );
