@@ -8,7 +8,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className=" overflow-y-hidden">
+      <body style={{ fontFamily: "Inter"}} className=" overflow-y-hidden">
       <Header />
         {children}
       </body>

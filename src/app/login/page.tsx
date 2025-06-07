@@ -46,7 +46,7 @@ export default function Register() {
     return (
         <>
         <div className="h-screen w-screen flex justify-center items-center">
-            <div className="h-auto w-[500px] animate-pulse shadow-2xl p-10 rounded-md gap-3 flex flex-col justify-center items-center">
+            <div className="h-auto w-[500px] max-md:w-[500px] animate-pulse shadow-2xl p-10 rounded-md gap-3 flex flex-col justify-center items-center">
                 <div className="flex justify-center items-center text-2xl font-bold text-blue-400"><h1>Login</h1></div>
                 <div className="flex flex-col">
                 <label className="text-gray-500 mb-1" htmlFor="email">E-mail</label>

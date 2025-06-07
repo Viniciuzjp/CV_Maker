@@ -1,5 +1,4 @@
 import { FaRegPenToSquare } from "react-icons/fa6";
-import { motion } from 'framer-motion';
 import Link from "next/link";
 
 
@@ -12,7 +11,7 @@ export default function Home() {
           <Link href="/about">
           <p>Como Funciona</p>
           </Link>
-          <Link href="/curriculums">
+          <Link href="/templates">
           <p>Seus Curriculos</p>
           </Link>
           <Link href="/about">
