@@ -1,31 +1,10 @@
 'use client';
 import axios from "axios";
 import { useEffect, useState } from "react";
+import CurriculumTypeProps from "./interface";
 
 export default function Curriculums() {
-
-    interface Curriculum {
-        _id: string;
-        name: string;
-        about: string;
-        adress: string;
-        email: string;
-        telephone: string;
-        linkedin: string;
-        github: string;
-        objective: string;
-        experience: string;
-        experienceDate: string;
-        experienceDescription: string;
-        education: string;
-        skills: string;
-        languages: string;
-        projects: string;
-        color1: string;
-        colorText: string;
-        fontFamily: string;
-    }
-    const [curriculums, setCurriculums] = useState<Curriculum[]>([]);
+    const [curriculums, setCurriculums] = useState<CurriculumTypeProps[]>([]);
 
     useEffect(() => {
         axios.get("http://localhost:3001")
