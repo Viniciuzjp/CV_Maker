@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
@@ -7,6 +10,7 @@ import curriculum from "./curriculum.js";
 const route = express()
 import LocalStrategy from "passport-local"
 import session from "express-session"
+import OpenAI from "openai";
 
 route.use(express.urlencoded({extended: true}))
 route.use(express.json())
@@ -113,5 +117,24 @@ route.get('logout', (req, res) => {
     res.redirect('/')
 })
 
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
-route.listen(3003, () => console.log("server is running on port 3003"))
+route.post("/chat", async (req, res) => {
+  try {
+    const { message } = req.body;
+
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [{ role: "user", content: message }],
+    });
+
+    res.json({ reply: completion.choices[0].message.content });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erro no servidor" });
+  }
+});
+
+route.listen(3001, () => console.log("server is running on port 3001"))

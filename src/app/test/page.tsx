@@ -1,11 +1,12 @@
 'use client';
 
 import InputComponent from "@/components/input/input";
+import { Button, Spinner } from "@av-digital/components";
+import "@av-digital/components/styles"
 
 export default function Test() {
     return (
         <div>
-            <InputComponent type="text" id="name" name="name" placeholder="name" value="" onChange={() => {}} />
         </div>
     );
 }

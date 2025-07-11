@@ -1,23 +1,36 @@
 "use client";
-import { useEffect, useState } from "react";
-import { HiOutlineMail } from "react-icons/hi";
-import { FaLocationDot, FaPlus } from "react-icons/fa6";
-import { BsFillTelephoneFill } from "react-icons/bs";
-import { FaLinkedin } from "react-icons/fa";
-import { FaGithub } from "react-icons/fa";
-import { MdOutlineLibraryBooks } from "react-icons/md";
-import { TbDeviceImacPlus } from "react-icons/tb";
-import { FaRegEyeSlash } from "react-icons/fa6";
-import { TbTextSize } from "react-icons/tb";
-import { FaTrashAlt } from "react-icons/fa";
-import { CiCirclePlus } from "react-icons/ci";
-import generatePDF from "react-to-pdf";
-import { Options } from "react-to-pdf";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
+import generatePDF, { Options } from "react-to-pdf";
+import { AnimatePresence, motion } from "framer-motion";
+
+import { HiOutlineMail } from "react-icons/hi";
+
+import { FaLocationDot } from "react-icons/fa6";
+
+import {
+  FaRegEyeSlash,
+  FaTrashAlt,
+  FaLinkedin,
+  FaGithub,
+  FaCheck,
+} from "react-icons/fa";
+
+import { BsFillTelephoneFill } from "react-icons/bs";
+import { MdOutlineLibraryBooks } from "react-icons/md";
+
+import { TbDeviceImacPlus, TbTextSize } from "react-icons/tb";
+
+import { CiCirclePlus } from "react-icons/ci";
 import { RiFileCheckFill } from "react-icons/ri";
-import { FaCheck } from "react-icons/fa";
-import { TwitterPicker } from "react-color";
+
+import ColorPickerWrapper from "@/components/ColorPickerWrapper/ColorPickerWrapper";
 import InputComponent from "@/components/input/input";
+import TemplateTwo from "@/components/Templates/TemplateColum/curriculum";
+import TemplateMain from "@/components/Templates/TemplateMain/curriculum";
+
+import { toPng } from "html-to-image";
+import jsPDF from "jspdf";
 
 export default function AddTopics() {
   // State
@@ -33,6 +46,9 @@ export default function AddTopics() {
     experience: "",
     experienceDate: "",
     experienceDescription: "",
+    experience2: "",
+    experienceDate2: "",
+    experienceDescription2: "",
     education: "",
     skills: "",
     languages: "",
@@ -60,17 +76,6 @@ export default function AddTopics() {
         Topic.style.display = "flex";
       }
     }
-  };
-
-  const handleColorChange = (e: any) => {
-    setAbout({
-      ...about,
-      [e.target.name]: e.target.value,
-    });
-    setAbout({
-      ...about,
-      colorText: e.target.value,
-    });
   };
   const handleColorPickerChange = (e: any) => {
     setAbout({
@@ -170,6 +175,9 @@ export default function AddTopics() {
       experience: "",
       experienceDate: "",
       experienceDescription: "",
+      experience2: "",
+      experienceDate2: "",
+      experienceDescription2: "",
       education: "",
       skills: "",
       languages: "",
@@ -368,10 +376,43 @@ export default function AddTopics() {
     },
   };
 
-  const targetRef = () => document.getElementById("pdfElement")!;
-  const handleDownload = () => {
-    generatePDF(targetRef, customization);
+  const handleDownload = async () => {
+    const element = pdfRef.current;
+    if (!element) return;
+
+    try {
+      const dataUrl = await toPng(element, {
+        quality: 1,
+        cacheBust: true,
+        pixelRatio: 2,
+      });
+
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "px",
+        format: [element.offsetWidth, element.offsetHeight],
+      });
+
+      pdf.addImage(
+        dataUrl,
+        "PNG",
+        0,
+        0,
+        element.offsetWidth,
+        element.offsetHeight
+      );
+      pdf.save("curriculo.pdf");
+    } catch (error) {
+      console.error("Erro ao gerar PDF:", error);
+    }
   };
+
+  const [selectedTemplate, setSelectedTemplate] = useState<"default" | "two">(
+    "default"
+  );
+
+  const pdfRef = useRef<HTMLDivElement>(null);
+
   return (
     <>
       <main className="flex max-md:flex-col h-screen w-screen max-md:block max-md:overflow-y-scroll max-md:overflow-hidden">
@@ -382,7 +423,7 @@ export default function AddTopics() {
         >
           <div
             id="about"
-            className="bg-white pt-5 flex flex-col w-9/10 h-auto justify-center items-center mb-2 shadow-md mt-190"
+            className="bg-white pt-5 flex flex-col w-9/10 h-auto justify-center items-center mb-2 shadow-md mt-290"
           >
             <InputComponent
               onChange={handleChange}
@@ -405,7 +446,7 @@ export default function AddTopics() {
               placeholder="Enter your city"
               value={about.adress}
             />
-            <div className="flex w-9/10 h-12 mb-5">
+            <div className="flex w-9/10 h-12 mb-5 gap-5">
               <InputComponent
                 onChange={handleChange}
                 type="text"
@@ -497,7 +538,7 @@ export default function AddTopics() {
               placeholder="Say more about your objective"
               value={about.objective}
             />
-            <div className="w-9/10 h-12 flex mb-5">
+            <div className="w-9/10 h-12 flex mb-5 gap-5">
               <InputComponent
                 onChange={handleChange}
                 type="text"
@@ -528,6 +569,40 @@ export default function AddTopics() {
                 defaultValue={""}
                 className="block w-10/10 border mb-5 pb-5 pt-3 pl-5 rounded-md overflow-hidden outline-0 border-gray-300 placeholder:text-gray-400 text-gray-500"
                 name="experienceDescription"
+                id="txtArea"
+              />
+            </div>
+            <div className="w-9/10 h-12 flex mb-5 gap-5">
+              <InputComponent
+                onChange={handleChange}
+                type="text"
+                name="experience2"
+                placeholder="Your Experience"
+                value={about.experience2}
+              />
+              <InputComponent
+                onChange={handleChange}
+                type="text"
+                name="experienceDate2"
+                placeholder="Date"
+                value={about.experienceDate2}
+              />
+            </div>
+            <div className="flex w-9/10 h-auto mb-5">
+              <textarea
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    const textoAtual = (e.target as HTMLTextAreaElement).value;
+                    (e.target as HTMLTextAreaElement).value = textoAtual + "\n";
+                    const textarea = e.target as HTMLTextAreaElement;
+                    textarea.style.height = `${textarea.scrollHeight}px`;
+                  }
+                }}
+                onChange={handleChange}
+                defaultValue={""}
+                className="block w-10/10 border mb-5 pb-5 pt-3 pl-5 rounded-md overflow-hidden outline-0 border-gray-300 placeholder:text-gray-400 text-gray-500"
+                name="experienceDescription2"
                 id="txtArea"
               />
             </div>
@@ -595,8 +670,33 @@ export default function AddTopics() {
             <h1 className="text-2xl font-bold">Customization</h1>
           </div>
           <div className="mb-[100px]">
-            <TwitterPicker onChangeComplete={handleColorPickerChange} />
+            <ColorPickerWrapper onChangeComplete={handleColorPickerChange} />
           </div>
+          <div className="flex flex-col items-center mb-[100px]">
+            <div className="flex gap-4 mb-4">
+              <button
+                onClick={() => setSelectedTemplate("default")}
+                className={`px-4 py-2 rounded ${
+                  selectedTemplate === "default"
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-200"
+                }`}
+              >
+                Modelo Original
+              </button>
+              <button
+                onClick={() => setSelectedTemplate("two")}
+                className={`px-4 py-2 rounded ${
+                  selectedTemplate === "two"
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-200"
+                }`}
+              >
+                Modelo Duas Colunas
+              </button>
+            </div>
+          </div>
+          <div className="flex flex-col items-center mb-[100px]"></div>
         </section>
         <div className="w-full justify-center align-center">
           <div className="flex w-10/10 h-[30px] shadow-md">
@@ -627,169 +727,48 @@ export default function AddTopics() {
               />
             </div>
           </div>
-          <section
-            id="cv"
-            style={{
-              fontFamily: about.fontFamily,
-              fontSize: textSize.fontSize,
-            }}
-            className="flex relative top-7 left-1/2 transform -translate-x-1/2 flex-col flex-wrap w-[23.59rem] h-[32.7rem] shadow-md items-center"
-          >
-            <div
-              id="lineCV"
-              style={{ backgroundColor: about.background }}
-              className="h-[32rem] w-[8px] mt-1"
-            ></div>
-            <div className="h-10/20 mt-3 w-9/10 items-center">
-              <p
-                style={{ color: about.colorText }}
-                className="text-1xl font-bold"
-              >
-                {about.name}
-              </p>
-              <div className="flex justify-between flex-wrap">
-                <div className="flex items-center">
-                  {renderLocation()}
-                  <p className="ml-1 text-[0.5rem]">{about.adress}</p>
-                </div>
-                <div className="flex">
-                  {renderEmail()}
-                  <p className="ml-1 text-[0.5rem]">{about.email}</p>
-                </div>
-                <div className="flex items-center">
-                  {renderPhone()}
-                  <p className="ml-1 text-[0.5rem]">{about.telephone}</p>
-                </div>
-                <div className="flex items-center">
-                  {renderLinkedin()}
-                  <p className="ml-1 text-[0.5rem]">{about.linkedin}</p>
-                </div>
-                <div className="flex items-center">
-                  {renderGithub()}
-                  <p className="ml-1 text-[0.5rem]">{about.github}</p>
-                </div>
-              </div>
-              <div className="flex flex-col justify-between">
-                <div id="Topic" className="flex items-center">
-                  <div
-                    style={{ backgroundColor: about.background }}
-                    className="mt-3 h-[1rem] w-[5px] mr-1"
-                  ></div>
-                  <p
-                    style={{ color: about.colorText }}
-                    className="mt-3 text-[0.7rem] font-bold"
-                  >
-                    Objective
-                  </p>
-                </div>
-                <p className="text-[0.5rem]">{about.objective}</p>
-                <div id="Topic" className="flex items-center">
-                  <div
-                    style={{ backgroundColor: about.background }}
-                    className="mt-3 h-[1rem] w-[5px] mr-1"
-                  ></div>
-                  <p
-                    style={{ color: about.colorText }}
-                    className="mt-3 text-[0.7rem] font-bold"
-                  >
-                    Experience
-                  </p>
-                </div>
-                <div className="flex-wrap">
-                  <div className="flex justify-between">
-                    <p className="text-[0.5rem]">{about.experience}</p>
-                    <p className="text-[0.5rem]">{about.experienceDate}</p>
-                  </div>
-                </div>
-                <div className="flex flex-col ml-3 w-auto">
-                  <ul>
-                    {about.experienceDescription
-                      .split("\n")
-                      .map((item, index) => (
-                        <li
-                          key={index}
-                          className="text-[0.5rem] flex items-center"
-                        >
-                          <span id="Topic" className="mr-1">
-                            •
-                          </span>
-                          {item}
-                        </li>
-                      ))}
-                  </ul>
-                </div>
-                <div id="containerEdu">
-                  <div id="Topic" className="flex items-center">
-                    <div
-                      style={{ backgroundColor: about.background }}
-                      className="mt-3 h-[1rem] w-[5px] mr-1"
-                    ></div>
-                    <p
-                      style={{ color: about.colorText }}
-                      className="mt-3 text-[0.7rem] font-bold"
-                    >
-                      Education
-                    </p>
-                  </div>
-                  <p className="text-[0.5rem]">{about.education}</p>
-                  <div id="Topic" className="flex items-center">
-                    <div
-                      style={{ backgroundColor: about.background }}
-                      className="mt-3 h-[1rem] w-[5px] mr-1"
-                    ></div>
-                    <p
-                      style={{ color: about.colorText }}
-                      className="mt-3 text-[0.7rem] font-bold"
-                    >
-                      Skills
-                    </p>
-                  </div>
-                  <div className="flex flex-col ml-3 w-auto">
-                    <ul>
-                      {about.skills.split("\n").map((item, index) => (
-                        <li
-                          key={index}
-                          className="text-[0.5rem] flex items-center"
-                        >
-                          <span id="Topic" className="mr-1">
-                            •
-                          </span>
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div id="Topic" className="flex items-center">
-                    <div
-                      style={{ backgroundColor: about.background }}
-                      className="mt-3 h-[1rem] w-[5px] mr-1"
-                    ></div>
-                    <p
-                      style={{ color: about.colorText }}
-                      className="mt-3 text-[0.7rem] font-bold"
-                    >
-                      Languages
-                    </p>
-                  </div>
-                  <p className="text-[0.5rem]">{about.languages}</p>
-                  <div id="Topic" className="flex items-center">
-                    <div
-                      style={{ backgroundColor: about.background }}
-                      className="mt-3 h-[1rem] w-[5px] mr-1"
-                    ></div>
-                    <p
-                      style={{ color: about.colorText }}
-                      className="mt-3 text-[0.7rem] font-bold"
-                    >
-                      Projects
-                    </p>
-                    <div></div>
-                  </div>
-                  <p className="text-[0.5rem]">{about.projects}</p>
-                </div>
-              </div>
+          <AnimatePresence mode="wait">
+            <div ref={pdfRef} id="pdfElement">
+              {selectedTemplate === "default" ? (
+                <motion.div
+                  key="template-1"
+                  initial={{ opacity: 0, x: -30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 30 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <TemplateMain
+                    about={about}
+                    textSize={textSize}
+                    renderLocation={renderLocation}
+                    renderEmail={renderEmail}
+                    renderPhone={renderPhone}
+                    renderLinkedin={renderLinkedin}
+                    renderGithub={renderGithub}
+                  />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="template-2"
+                  initial={{ opacity: 0, x: 30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -30 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <TemplateTwo
+                    about={about}
+                    textSize={textSize}
+                    renderLocation={renderLocation}
+                    renderEmail={renderEmail}
+                    renderPhone={renderPhone}
+                    renderLinkedin={renderLinkedin}
+                    renderGithub={renderGithub}
+                  />
+                </motion.div>
+              )}
             </div>
-          </section>
+          </AnimatePresence>
+
           <section className="flex mt-10 h-12 w-full max-md:flex max-md:justify-center md:justify-center max-md:items-center">
             <button
               onClick={handleDownload}
@@ -834,95 +813,3 @@ export default function AddTopics() {
     </>
   );
 }
-// PDF Element
-
-/*
-<div id="pdfElement" style={{ fontFamily: about.fontFamily, fontSize: textSize.fontSize}} className="flex flex-col mt-10 h-[100vh] w-[100vh] flex-wrap shadow-lg items-center hidden">
-              <div id="lineCv" style={{ backgroundColor: about.color1 }} className="h-[100vh] w-[8px] mt-1"></div>
-              <div className="h-10/20 mt-3 w-9/10 items-center">
-                  <p style={{ color: about.colorText }} className="text-2xl font-bold">{about.name}</p>
-                  <div className="flex justify-between flex-wrap">
-                  <div className="flex items-center">
-                  {renderLocation()}
-                  <p className="ml-1 text-[0.8rem]">{about.adress}</p>
-                  </div>
-                  <div className="flex">
-                  {renderEmail()}
-                  <p className="ml-1 text-[0.8rem]">{about.email}</p>
-                  </div>
-                  <div className="flex items-center">
-                  {renderPhone()}
-                  <p className="ml-1 text-[0.8rem]">{about.telephone}</p>
-                  </div>
-                  <div className="flex items-center">
-                  {renderLinkedin()}
-                  <p className="ml-1 text-[0.8rem]">{about.linkedin}</p>
-                  </div>
-                  <div className="flex items-center">
-                  {renderGithub()}
-                  <p className="ml-1 text-[0.8rem]">{about.github}</p>
-                  </div>
-                  </div>
-                  <div className="flex flex-col justify-between">
-                  <div className="flex items-center">
-                  <div style={{ backgroundColor: about.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
-                  <p style={{ color: about.colorText }} className="text-1xl font-bold">Objective</p>
-                  </div>
-                  <p className="text-[0.8rem]">{about.objective}</p>
-                  <div className="flex items-center">
-                  <div style={{ backgroundColor: about.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
-                  <p style={{ color: about.colorText }} className="text-1xl font-bold">Experience</p>
-                  </div>
-                  <div className="flex-wrap">
-                  <div className="flex justify-between">
-                  <p className="text-[0.8rem]">{about.experience}</p>
-                  <p className="text-[0.8rem]">{about.experienceDate}</p>
-                  </div>
-                  </div>
-                  <div className="flex flex-col ml-3 w-auto">
-                    <ul>
-                    {about.experienceDescription.split('\n').map((item, index) => (
-                    <li key={index} className="text-[0.8rem] flex items-center">
-                    <span className="mr-1">•</span>
-                    {item}
-                    </li>
-                    ))}
-                    </ul>
-                  </div>
-                  <div id="containerEdu">
-                  <div className="flex items-center">
-                  <div style={{ backgroundColor: about.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
-                  <p style={{ color: about.colorText }} className="text-1xl font-bold">Education</p>
-                  </div>
-                  <p className="text-[0.8rem]">{about.education}</p>
-                  <div className="flex items-center">
-                  <div style={{ backgroundColor: about.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
-                  <p style={{ color: about.colorText }} className="text-1xl font-bold">Skills</p>
-                  </div>
-                  <div className="flex flex-col ml-3 w-auto">
-                    <ul>
-                    {about.skills.split('\n').map((item, index) => (
-                    <li key={index} className="text-[0.8rem] flex items-center">
-                    <span className="mr-1">•</span>
-                    {item}
-                    </li>
-                    ))}
-                    </ul>
-                  </div>
-                  <div className="flex items-center">
-                  <div style={{ backgroundColor: about.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
-                  <p style={{ color: about.colorText }} className="text-1xl font-bold">Languages</p>
-                  </div>
-                  <p className="text-[0.8rem]">{about.languages}</p>
-                  <div className="flex items-center">
-                  <div style={{ backgroundColor: about.color1 }} className="mt-3 h-[1rem] w-[5px] mr-1"></div>
-                  <p style={{ color: about.colorText }} className="text-1xl font-bold">Projects</p>
-                  <div>
-                  </div>
-                  </div>
-                  <p className="text-[0.8rem]">{about.projects}</p>
-                  </div>
-                  </div>
-              </div>
-            </div>
-*/

@@ -12,23 +12,6 @@ export default function Curriculums() {
         .catch((error) => console.log(error))
     },)
 
-      const [mensagem, setMensagem] = useState('');
-      const mensagens = [
-        'Estamos preparando a página para você...',
-        'Aguarde um pouco mais, estamos quase lá...',
-        'Carregando dados...',
-        'Processando solicitação...',
-        'Por favor, aguarde...',
-      ];
-    
-      useEffect(() => {
-        const intervalo = setInterval(() => {
-          const indice = Math.floor(Math.random() * mensagens.length);
-          setMensagem(mensagens[indice]);
-        }, 4000);
-    
-        return () => clearInterval(intervalo);
-      }, []);
     return (
         <>
     <div className="flex flex-wrap max-h-screen justify-center items-center overflow-y-scroll">
@@ -83,7 +66,6 @@ export default function Curriculums() {
           <div className="w-24 h-24 border-8 border-gray-200 border-t-blue-500 rounded-full animate-spin">
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-blue-500 rounded-full"></div>
           </div>
-          <p className="text-2xl font-bold mt-4 text-gray-600">{mensagem}</p>
         </div>
       </div>
     )}
