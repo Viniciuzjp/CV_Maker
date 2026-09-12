@@ -10,8 +10,9 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@av-digital/components": "^0.1.8",
+    "@av-digital/components": "^0.3.9",
     "axios": "^1.8.4",
+    "bcryptjs": "^3.0.3",
     "bootstrap": "^5.3.3",
     "cors": "^2.8.5",
     "dotenv": "^17.2.0",

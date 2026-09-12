@@ -11,12 +11,13 @@ const route = express()
 import LocalStrategy from "passport-local"
 import session from "express-session"
 import OpenAI from "openai";
+import bcrypt from "bcryptjs";
 
 route.use(express.urlencoded({extended: true}))
 route.use(express.json())
 
 route.use(session({
-    secret: 'secret',
+    secret: process.env.SESSION_SECRET || 'dev-secret-change-me',
     resave: false,
     saveUninitialized: true
 }))
@@ -30,7 +31,8 @@ passport.use(new LocalStrategy({
     try {
       const user = await register.findOne({ email: email });
       if (!user) return done(null, false);
-      if (user.password != password) return done(null, false);
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) return done(null, false);
       return done(null, user);
     } catch (err) {
       return done(err);
@@ -51,7 +53,7 @@ mongoose.connect("mongodb://127.0.0.1:27017/CvMaker")
 .then(() => console.log("database is connected"))
 .catch((err) => console.log(err))
 
-route.use(cors())
+route.use(cors({ origin: process.env.CLIENT_ORIGIN || "http://localhost:3000" }))
 
 route.use(express.static("public"))
 route.use(express.json())
@@ -61,36 +63,45 @@ route.get("/", (req,res) => {
     .then((data) => res.json(data))
 })
 route.post("/curriculum", (req, res) => {
-    const newCurriculum = new curriculum(
-        req.body
-    )
+    const {
+        about, name, adress, email, telephone, linkedin, github, objective,
+        experience, experienceDate, experienceDescription, experience2,
+        experienceDate2, experienceDescription2, education, skills,
+        languages, projects, color1, colorText, fontFamily
+    } = req.body
+    const newCurriculum = new curriculum({
+        about, name, adress, email, telephone, linkedin, github, objective,
+        experience, experienceDate, experienceDescription, experience2,
+        experienceDate2, experienceDescription2, education, skills,
+        languages, projects, color1, colorText, fontFamily
+    })
     newCurriculum.save()
     .then((curriculum) => res.json(curriculum))
     .catch((err) => res.json(err, "Something went wrong"))
 })
-route.post('/register', (req,res)=>{
+route.post('/register', async (req,res)=>{
     if(req.body.username == "" || req.body.email == "" || req.body.password == "" || req.body.password2 == ""){
         return res.json("Please fill all the fields")
     }
     else if(req.body.password != req.body.password2){
         return res.json("Passwords do not match")
     }
-    else if(req.body.password.lenght < 6){
+    else if(req.body.password.length < 6){
         return res.json("Password must be at least 6 characters long")
     }
-    register.find({email: req.body.email})
-    .then((data) => {
-        if(data.length > 0){
-            return res.json("User already exists")
-        }else{
-            const Register = new register(
-                req.body
-            )
-            Register.save()
-            .then((register) => res.json(register))
-            .catch((err) => res.json(err, "Something went wrong"))
-        }
+    const data = await register.find({email: req.body.email})
+    if(data.length > 0){
+        return res.json("User already exists")
+    }
+    const hashedPassword = await bcrypt.hash(req.body.password, 10)
+    const Register = new register({
+        username: req.body.username,
+        email: req.body.email,
+        password: hashedPassword
     })
+    Register.save()
+    .then((register) => res.json(register))
+    .catch((err) => res.json(err, "Something went wrong"))
 })
 
 route.post('/login', (req, res, next) => {
@@ -112,7 +123,7 @@ route.post('/login', (req, res, next) => {
       res.json('Not authenticated');
     }
   });
-route.get('logout', (req, res) => {
+route.get('/logout', (req, res) => {
     req.logout()
     res.redirect('/')
 })

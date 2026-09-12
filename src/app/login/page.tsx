@@ -1,11 +1,11 @@
 'use client';
-import { FaUser } from "react-icons/fa";
-import React, { use } from "react";
+import React from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Link from "next/link";
+import { Button, Card, Flex, Stack, Text } from "@av-digital/components";
 
-export default function Register() {
+export default function Login() {
 
     const [data, setData] = useState({
         email: "",
@@ -27,11 +27,13 @@ export default function Register() {
         email: "",
     })
 
-    if (user && user.username) {
-      const username = localStorage.setItem("username", user.username);
-      const email = localStorage.setItem("email", user.email);
-      const id = localStorage.setItem("id", user._id);
-    }
+    useEffect(() => {
+      if (user && user.username) {
+        localStorage.setItem("username", user.username);
+        localStorage.setItem("email", user.email);
+        localStorage.setItem("id", user._id);
+      }
+    }, [user]);
 
     const handleSubmit = (e:any) => {
         e.preventDefault()
@@ -45,37 +47,43 @@ export default function Register() {
 
     return (
         <>
-        <div className="h-screen w-screen flex justify-center items-center">
-            <div className="h-auto w-[500px] max-md:w-[500px] animate-pulse shadow-2xl p-10 rounded-md gap-3 flex flex-col justify-center items-center">
-                <div className="flex justify-center items-center text-2xl font-bold text-blue-400"><h1>Login</h1></div>
-                <div className="flex flex-col">
-                <label className="text-gray-500 mb-1" htmlFor="email">E-mail</label>
+        <Flex justify="center" align="center" className="h-screen w-screen px-4">
+            <Card spacing="xl" className="h-auto w-[500px] max-w-full bg-white rounded-md">
+              <Stack gap="md" classname="justify-center items-center">
+                <Flex justify="center" align="center">
+                  <Text variant="title" size="xl" weight="bold" classname="text-blue-400">Login</Text>
+                </Flex>
+                <Stack gap="sm">
+                <label className="text-gray-500" htmlFor="email">E-mail</label>
                 <input
                 id="email"
                 onChange={handleSetData}
                 type="email"
                 name="email"
                 placeholder="E-mail"
-                className="h-10 w-100 border placeholder-gray-400 border-gray-300 rounded-md p-2 mb-2 outline-gray-400"
+                className="h-10 w-full border placeholder-gray-400 border-gray-300 rounded-md p-2 outline-gray-400"
                 />
-                </div>
-                <div className="flex flex-col">
-                <label className="text-gray-500 mb-1" htmlFor="password">Password</label>
+                </Stack>
+                <Stack gap="sm">
+                <label className="text-gray-500" htmlFor="password">Password</label>
                 <input
                 id="password"
                 onChange={handleSetData}
                 type="password"
                 name="password"
                 placeholder="Password"
-                className="h-10 w-100 border placeholder-gray-400 border-gray-300 rounded-md p-2 mb-2 outline-gray-400"
+                className="h-10 w-full border placeholder-gray-400 border-gray-300 rounded-md p-2 outline-gray-400"
                 />
-                </div>
-                <button onClick={handleSubmit} className="h-10 w-100 bg-blue-400 text-white rounded-md">Login</button>
-                <Link href="/register" className="ml-[250px]">
-                <button className="h-10 text-blue-400 rounded-md">Não tem uma conta?</button>
-                </Link>
-            </div>
-        </div>
+                </Stack>
+                <Button onClick={handleSubmit} variant="primary" className="h-10 w-full rounded-md justify-center">Login</Button>
+                <Flex justify="end" className="w-full">
+                  <Link href="/register">
+                    <button className="h-10 text-blue-400 rounded-md">Não tem uma conta?</button>
+                  </Link>
+                </Flex>
+              </Stack>
+            </Card>
+        </Flex>
         </>
     );
 }

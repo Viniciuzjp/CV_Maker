@@ -2,7 +2,88 @@
 @import "tailwindcss";
 
 :root {
-    --root-avdig-button-secondary-text-color: #fff;
-    --root-avdig-button-secondary-background-color: #333;
+    --av-font-family: "Inter", sans-serif;
+    --av-primary-color: #2563eb;
+    --av-secondary-color: #333333;
+    --av-text-color: #ffffff;
+
+    --av-space-xs: 0.25rem;
+    --av-space-sm: 0.5rem;
+    --av-space-md: 1rem;
+    --av-space-lg: 1.5rem;
+    --av-space-xl: 2rem;
+
+    --av-font-size-sm: 0.875rem;
+    --av-font-size-md: 1rem;
+    --av-font-size-lg: 1.125rem;
+    --av-font-bold: 700;
+
+    --av-spinner-width-sm: 24px;
+    --av-spinner-width-md: 48px;
+    --av-spinner-width-lg: 64px;
+
+    --av-text-primary: #111827;
+    --av-text-secondary: #4b5563;
+    --av-text-muted: #9ca3af;
+    --av-text-xs: 0.75rem;
+    --av-text-sm: 0.875rem;
+    --av-text-md: 1rem;
+    --av-text-lg: 1.125rem;
+    --av-text-xl: 1.5rem;
+    --av-weight-extralight: 200;
+    --av-weight-light: 300;
+    --av-weight-normal: 400;
+    --av-weight-medium: 500;
+    --av-weight-bold: 700;
+    --av-weight-extrabold: 800;
+}
+
+.cv-content {
+    flex: 1;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.cv-header {
+    padding-bottom: var(--av-space-sm);
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.cv-marker {
+    width: 5px;
+    height: 1rem;
+    flex-shrink: 0;
+}
+
+.cv-bullet-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.cv-sidebar {
+    padding: var(--av-space-lg);
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+.cv-content-main {
+    width: 65%;
+    box-sizing: border-box;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fade-in 0.2s ease-out;
 }
 

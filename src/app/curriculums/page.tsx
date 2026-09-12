@@ -2,6 +2,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import CurriculumTypeProps from "./interface";
+import { Button, Card, Flex, Spinner, Text } from "@av-digital/components";
 
 export default function Curriculums() {
     const [curriculums, setCurriculums] = useState<CurriculumTypeProps[]>([]);
@@ -10,21 +11,24 @@ export default function Curriculums() {
         axios.get("http://localhost:3001")
         .then((response) => setCurriculums(response.data))
         .catch((error) => console.log(error))
-    },)
+    }, [])
 
     return (
         <>
-    <div className="flex flex-wrap max-h-screen justify-center items-center overflow-y-scroll">
-    <div className="w-[90%] m-[0 auto] mt-10">
-        <h2 className="text-3xl font-bold">Currículos Recentes</h2>
-        <p className="text-gray-400">veja os curriculos mais recentes</p>
+    <Flex wrap justify="center" align="center" className="max-h-screen overflow-y-scroll">
+    <div className="w-[90%] mx-auto mt-10">
+        <Text variant="title" size="xl" weight="bold">Currículos Recentes</Text>
+        <Text variant="caption" classname="text-gray-400">veja os curriculos mais recentes</Text>
     </div>
     {curriculums.length > 0 ? (
       curriculums.map((curriculum) => (
-      <div key={curriculum._id} className="flex flex-col max-h-screen justify-center items-center overflow-y-scroll'">
-        <div style={{ fontFamily: curriculum.fontFamily }} className="flex w-[21.59rem] h-[29.7rem]  shadow-2xl p-3 m-20 text-[0.5rem]">
-          <div style={{ backgroundColor: "black" }} className="h-[28rem] w-[8px] mt-2"></div>
-          <div className="flex flex-col p-2 mt-2 flex-wrap">
+      <Flex key={curriculum._id} direction="column" justify="center" align="center" className="max-h-screen overflow-y-scroll">
+        <Card
+          spacing="sm"
+          className="flex w-[21.59rem] max-w-full aspect-[210/297] mt-10 mb-2 text-[0.5rem]"
+        >
+          <div style={{ backgroundColor: "black" }} className="w-[8px]"></div>
+          <div style={{ fontFamily: curriculum.fontFamily }} className="flex flex-col p-2 mt-2 flex-wrap">
           <h1>{curriculum.name}</h1>
           <p>{curriculum.adress}</p>
           <p>{curriculum.email}</p>
@@ -56,20 +60,18 @@ export default function Curriculums() {
           <p>{curriculum.projects}</p>
           <p>{curriculum.color1}</p>
         </div>
-        </div>
-        <button className="bg-blue-500 hover:bg-blue-700 mt-[-50px] mb-[70px] text-white font-bold py-2 px-4 rounded">Editar</button>
-      </div>
+        </Card>
+        <Button variant="primary" className="mt-4 mb-10 rounded">Editar</Button>
+      </Flex>
       ))
     ) : (
-      <div className="flex justify-center items-center h-screen">
-        <div className="flex flex-col items-center">
-          <div className="w-24 h-24 border-8 border-gray-200 border-t-blue-500 rounded-full animate-spin">
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-blue-500 rounded-full"></div>
-          </div>
-        </div>
-      </div>
+      <Flex justify="center" align="center" className="h-screen">
+        <Flex direction="column" align="center">
+          <Spinner variant="primary" />
+        </Flex>
+      </Flex>
     )}
-  </div>
+  </Flex>
         </>
     );
   }

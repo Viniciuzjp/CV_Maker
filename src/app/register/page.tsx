@@ -3,6 +3,7 @@ import { FaUser } from "react-icons/fa";
 import React from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { Button, Card, Flex, Stack, Text } from "@av-digital/components";
 
 export default function Register() {
   const [data, setData] = useState({
@@ -20,14 +21,6 @@ export default function Register() {
       [e.target.name]: e.target.value,
     });
   };
-  const handleStyle = (e: any) => {
-    const icon = document.getElementById("icon");
-    if (icon) {
-      icon.style.marginRight = "350px";
-      icon.style.transition = "margin-right 0.5s";
-    }
-  };
-
   const handleSubmit = (e: any) => {
     e.preventDefault();
     if (
@@ -37,11 +30,15 @@ export default function Register() {
       data.password2 == ""
     ) {
       alert("Por favor, preencha todos os campos");
-    } else if (data.password != data.password2) {
+      return;
+    }
+    if (data.password != data.password2) {
       alert("As senhas não são iguais");
+      return;
     }
     if (data.password.length < 6) {
       alert("A senha deve ter no mínimo 6 caracteres");
+      return;
     }
     axios
       .post("http://localhost:3001/register", data)
@@ -51,76 +48,80 @@ export default function Register() {
   console.log(data);
   return (
     <>
-      <div className="h-screen w-screen flex justify-center items-center">
-        <div className="h-auto w-[500px] animate-pulse shadow-2xl p-10 rounded-md gap-3 flex flex-col justify-center items-center">
-          <div className="flex justify-center items-center">
-            <FaUser id="icon" className="mb-5" size={50} color="#dadada" />
-          </div>
-          <div className="h-5 w-70 mt-[-80px]">
-            <p className="text-gray-500">{data.username}</p>
-            <p className="text-gray-500 text-sm">{data.email}</p>
-          </div>
-          <div className="flex flex-col mt-8">
-            <label className="text-gray-500 mb-1" htmlFor="username">
-              Username
-            </label>
-            <input
-              onFocus={handleStyle}
-              onChange={handleSetData}
-              id="username"
-              type="text"
-              name="username"
-              placeholder="Username"
-              className="h-10 w-100 border placeholder-gray-400 border-gray-300 rounded-md p-2 mb-2 outline-gray-400"
-            />
-          </div>
-          <div className="flex flex-col">
-            <label className="text-gray-500 mb-1" htmlFor="email">
-              E-mail
-            </label>
-            <input
-              onChange={handleSetData}
-              id="email"
-              type="email"
-              name="email"
-              placeholder="E-mail"
-              className="h-10 w-100 border placeholder-gray-400 border-gray-300 rounded-md p-2 mb-2 outline-gray-400"
-            />
-          </div>
-          <div className="flex flex-col">
-            <label className="text-gray-500 mb-1" htmlFor="password">
-              Password
-            </label>
-            <input
-              onChange={handleSetData}
-              id="password"
-              type="password"
-              name="password"
-              placeholder="Password"
-              className="h-10 w-100 border placeholder-gray-400 border-gray-300 rounded-md p-2 mb-2 outline-gray-400"
-            />
-          </div>
-          <div className="flex flex-col">
-            <label className="text-gray-500 mb-1" htmlFor="password2">
-              Confirm Password
-            </label>
-            <input
-              onChange={handleSetData}
-              id="password2"
-              type="password"
-              name="password2"
-              placeholder="Confirm Password"
-              className="h-10 w-100 border placeholder-gray-400 border-gray-300 rounded-md p-2 mb-2 outline-gray-400"
-            />
-          </div>
-          <button
-            onClick={handleSubmit}
-            className="h-10 w-100 bg-blue-400 text-white rounded-md"
-          >
-            Register
-          </button>
-        </div>
-      </div>
+      <Flex justify="center" align="center" className="h-screen w-screen px-4">
+        <Card spacing="xl" className="h-auto w-[500px] max-w-full bg-white rounded-md">
+          <Stack gap="md" classname="justify-center items-center">
+            <Flex justify="center" align="center">
+              <FaUser id="icon" className="mb-2" size={50} color="#dadada" />
+            </Flex>
+            {(data.username || data.email) && (
+              <Flex direction="column" align="center" className="w-full">
+                <Text variant="body" classname="text-gray-500">{data.username}</Text>
+                <Text variant="caption" classname="text-gray-500">{data.email}</Text>
+              </Flex>
+            )}
+            <Stack gap="sm">
+              <label className="text-gray-500" htmlFor="username">
+                Username
+              </label>
+              <input
+                onChange={handleSetData}
+                id="username"
+                type="text"
+                name="username"
+                placeholder="Username"
+                className="h-10 w-full border placeholder-gray-400 border-gray-300 rounded-md p-2 outline-gray-400"
+              />
+            </Stack>
+            <Stack gap="sm">
+              <label className="text-gray-500" htmlFor="email">
+                E-mail
+              </label>
+              <input
+                onChange={handleSetData}
+                id="email"
+                type="email"
+                name="email"
+                placeholder="E-mail"
+                className="h-10 w-full border placeholder-gray-400 border-gray-300 rounded-md p-2 outline-gray-400"
+              />
+            </Stack>
+            <Stack gap="sm">
+              <label className="text-gray-500" htmlFor="password">
+                Password
+              </label>
+              <input
+                onChange={handleSetData}
+                id="password"
+                type="password"
+                name="password"
+                placeholder="Password"
+                className="h-10 w-full border placeholder-gray-400 border-gray-300 rounded-md p-2 outline-gray-400"
+              />
+            </Stack>
+            <Stack gap="sm">
+              <label className="text-gray-500" htmlFor="password2">
+                Confirm Password
+              </label>
+              <input
+                onChange={handleSetData}
+                id="password2"
+                type="password"
+                name="password2"
+                placeholder="Confirm Password"
+                className="h-10 w-full border placeholder-gray-400 border-gray-300 rounded-md p-2 outline-gray-400"
+              />
+            </Stack>
+            <Button
+              onClick={handleSubmit}
+              variant="primary"
+              className="h-10 w-full rounded-md justify-center"
+            >
+              Register
+            </Button>
+          </Stack>
+        </Card>
+      </Flex>
     </>
   );
 }

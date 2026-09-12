@@ -5,7 +5,6 @@ const registerSchema = new Schema({
     username: String,
     email: String,
     password: String,
-    password2: String,
     date: {type: Date, default: Date.now}
 })
 

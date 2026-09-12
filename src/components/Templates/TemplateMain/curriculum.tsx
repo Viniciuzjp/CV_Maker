@@ -1,187 +1,164 @@
-import { TemplateProps } from "./interface";
-import React from "react";
+import { useResume } from "@/app/hooks/useResumeContext";
+import { Card, Flex, Stack, Text } from "@av-digital/components";
+import { BulletList, SectionTitle } from "../shared";
 
-const TemplateMain: React.FC<TemplateProps> = ({
-  about,
-  textSize,
-  renderLocation,
-  renderEmail,
-  renderPhone,
-  renderLinkedin,
-  renderGithub,
-}) => {
+export default function TemplateOneColumn() {
+  const {
+    resume,
+    RenderEmail,
+    renderLocation,
+    renderPhone,
+    renderLinkedin,
+    renderGithub,
+  } = useResume();
+
+
   return (
-    <section
+    <div
       id="cv"
       style={{
-        fontFamily: about.fontFamily,
-        fontSize: textSize.fontSize,
-      }}
-      className="flex relative top-7 left-1/2 transform -translate-x-1/2 flex-col flex-wrap w-[33.59rem] h-[42.7rem] shadow-lg items-center"
+        fontFamily: resume.fontFamily,
+        fontSize: resume.fontSize,
+        position: "relative",
+        top: "1.75rem",
+        left: "50%",
+        transform: "translateX(-50%)",
+        width: "min(33.59rem, 100%)",
+        aspectRatio: "210 / 297",
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "stretch",
+        ...(resume.fontFamily ? { "--av-font-family": resume.fontFamily } : {}),
+        ...(resume.fontSize
+          ? {
+              "--av-text-xs": resume.fontSize,
+              "--av-text-sm": resume.fontSize,
+              "--av-text-lg": resume.fontSize,
+            }
+          : {}),
+      } as React.CSSProperties}
     >
       <div
         id="lineCV"
-        style={{ backgroundColor: about.background }}
-        className="h-[42rem] w-[8px] mt-1"
-      ></div>
-      <div className="h-10/20 mt-3 w-9/10 items-center">
-        <p style={{ color: about.colorText }} className="text-1xl font-bold">
-          {about.name}
-        </p>
-        <div className="flex justify-between flex-wrap">
-          <div className="flex items-center">
-            {renderLocation()}
-            <p className="ml-1 text-[0.7rem]">{about.adress}</p>
-          </div>
-          <div className="flex">
-            {renderEmail()}
-            <p className="ml-1 text-[0.7rem]">{about.email}</p>
-          </div>
-          <div className="flex items-center">
-            {renderPhone()}
-            <p className="ml-1 text-[0.7rem]">{about.telephone}</p>
-          </div>
-          <div className="flex items-center">
-            {renderLinkedin()}
-            <p className="ml-1 text-[0.7rem]">{about.linkedin}</p>
-          </div>
-          <div className="flex items-center">
-            {renderGithub()}
-            <p className="ml-1 text-[0.7rem]">{about.github}</p>
-          </div>
-        </div>
-        <div className="flex flex-col justify-between">
-          <div id="Topic" className="flex items-center">
-            <div
-              style={{ backgroundColor: about.background }}
-              className="mt-3 h-[1rem] w-[5px] mr-1"
-            ></div>
-            <p
-              style={{ color: about.colorText }}
-              className="mt-3 text-[0.7rem] font-bold"
-            >
-              Objective
-            </p>
-          </div>
-          <p className="text-[0.7rem]">{about.objective}</p>
-          <div id="Topic" className="flex items-center">
-            <div
-              style={{ backgroundColor: about.background }}
-              className="mt-3 h-[1rem] w-[5px] mr-1"
-            ></div>
-            <p
-              style={{ color: about.colorText }}
-              className="mt-3 text-[0.7rem] font-bold"
-            >
-              Experience
-            </p>
-          </div>
-          <div className="flex-wrap">
-            <div className="flex justify-between">
-              <p className="text-[0.7rem]">{about.experience}</p>
-              <p className="text-[0.7rem]">{about.experienceDate}</p>
-            </div>
-          </div>
-          <div className="flex flex-col ml-3 w-auto">
-            <ul>
-              {about.experienceDescription.split("\n").map((item, index) => (
-                <li key={index} className="text-[0.7rem] flex items-center">
-                  <span id="Topic" className="mr-1">
-                    •
-                  </span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="flex-wrap">
-            <div className="flex justify-between">
-              <p className="text-[0.7rem]">{about.experience2}</p>
-              <p className="text-[0.7rem]">{about.experienceDate2}</p>
-            </div>
-          </div>
-          <div className="flex flex-col ml-3 w-auto">
-            <ul>
-              {about.experienceDescription2.split("\n").map((item, index) => (
-                <li key={index} className="text-[0.7rem] flex items-center">
-                  <span id="Topic" className="mr-1">
-                    •
-                  </span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div id="containerEdu">
-            <div id="Topic" className="flex items-center">
-              <div
-                style={{ backgroundColor: about.background }}
-                className="mt-3 h-[1rem] w-[5px] mr-1"
-              ></div>
-              <p
-                style={{ color: about.colorText }}
-                className="mt-3 text-[0.7rem] font-bold"
-              >
-                Education
-              </p>
-            </div>
-            <p className="text-[0.7rem]">{about.education}</p>
-            <div id="Topic" className="flex items-center">
-              <div
-                style={{ backgroundColor: about.background }}
-                className="mt-3 h-[1rem] w-[5px] mr-1"
-              ></div>
-              <p
-                style={{ color: about.colorText }}
-                className="mt-3 text-[0.7rem] font-bold"
-              >
-                Skills
-              </p>
-            </div>
-            <div className="flex flex-col ml-3 w-auto">
-              <ul>
-                {about.skills.split("\n").map((item, index) => (
-                  <li key={index} className="text-[0.7rem] flex items-center">
-                    <span id="Topic" className="mr-1">
-                      •
-                    </span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div id="Topic" className="flex items-center">
-              <div
-                style={{ backgroundColor: about.background }}
-                className="mt-3 h-[1rem] w-[5px] mr-1"
-              ></div>
-              <p
-                style={{ color: about.colorText }}
-                className="mt-3 text-[0.7rem] font-bold"
-              >
-                Languages
-              </p>
-            </div>
-            <p className="text-[0.7rem]">{about.languages}</p>
-            <div id="Topic" className="flex items-center">
-              <div
-                style={{ backgroundColor: about.background }}
-                className="mt-3 h-[1rem] w-[5px] mr-1"
-              ></div>
-              <p
-                style={{ color: about.colorText }}
-                className="mt-3 text-[0.7rem] font-bold"
-              >
-                Projects
-              </p>
-              <div></div>
-            </div>
-            <p className="text-[0.7rem]">{about.projects}</p>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
+        style={{
+          backgroundColor: resume.background,
+          width: "8px",
+          margin: "0.25rem 0",
+        }}
+      />
+      <Card spacing="lg" className="cv-content">
+        <Stack gap="lg">
+          <Stack gap="sm" classname="cv-header">
+            <Text variant="title" size="lg" weight="bold">
+              <span style={{ color: resume.colorText }}>{resume.name}</span>
+            </Text>
 
-export default TemplateMain;
+            <Flex justify="between" wrap gap="sm">
+              <Flex gap="xs" align="center">
+                {renderLocation()}
+                <Text variant="caption" size="xs">{resume.address}</Text>
+              </Flex>
+              <Flex gap="xs" align="center">
+                {RenderEmail()}
+                <Text variant="caption" size="xs">{resume.email}</Text>
+              </Flex>
+              <Flex gap="xs" align="center">
+                {renderPhone()}
+                <Text variant="caption" size="xs">{resume.telephone}</Text>
+              </Flex>
+              <Flex gap="xs" align="center">
+                {renderLinkedin()}
+                <Text variant="caption" size="xs">{resume.linkedin}</Text>
+              </Flex>
+              <Flex gap="xs" align="center">
+                {renderGithub()}
+                <Text variant="caption" size="xs">{resume.github}</Text>
+              </Flex>
+            </Flex>
+          </Stack>
+
+          <Stack gap="sm">
+            {resume.objective && (
+              <>
+                <SectionTitle color={resume.colorText} accentColor={resume.background}>
+                  Objective
+                </SectionTitle>
+                <Text variant="caption" size="xs">{resume.objective}</Text>
+              </>
+            )}
+
+            {(resume.experience ||
+              resume.experienceDate ||
+              resume.experienceDescription ||
+              resume.experience2 ||
+              resume.experienceDate2 ||
+              resume.experienceDescription2) && (
+              <SectionTitle color={resume.colorText} accentColor={resume.background}>
+                Experience
+              </SectionTitle>
+            )}
+            {(resume.experience || resume.experienceDate) && (
+              <Flex justify="between">
+                <Text variant="caption" size="xs">{resume.experience}</Text>
+                <Text variant="caption" size="xs">{resume.experienceDate}</Text>
+              </Flex>
+            )}
+            {resume.experienceDescription && (
+              <BulletList text={resume.experienceDescription} />
+            )}
+
+            {(resume.experience2 || resume.experienceDate2) && (
+              <Flex justify="between">
+                <Text variant="caption" size="xs">{resume.experience2}</Text>
+                <Text variant="caption" size="xs">{resume.experienceDate2}</Text>
+              </Flex>
+            )}
+            {resume.experienceDescription2 && (
+              <BulletList text={resume.experienceDescription2} />
+            )}
+
+            <div id="containerEdu">
+              <Stack gap="sm">
+                {resume.education && (
+                  <>
+                    <SectionTitle color={resume.colorText} accentColor={resume.background}>
+                      Education
+                    </SectionTitle>
+                    <Text variant="caption" size="xs">{resume.education}</Text>
+                  </>
+                )}
+
+                {resume.skills && (
+                  <>
+                    <SectionTitle color={resume.colorText} accentColor={resume.background}>
+                      Skills
+                    </SectionTitle>
+                    <BulletList text={resume.skills} />
+                  </>
+                )}
+
+                {resume.languages && (
+                  <>
+                    <SectionTitle color={resume.colorText} accentColor={resume.background}>
+                      Languages
+                    </SectionTitle>
+                    <Text variant="caption" size="xs">{resume.languages}</Text>
+                  </>
+                )}
+
+                {resume.projects && (
+                  <>
+                    <SectionTitle color={resume.colorText} accentColor={resume.background}>
+                      Projects
+                    </SectionTitle>
+                    <Text variant="caption" size="xs">{resume.projects}</Text>
+                  </>
+                )}
+              </Stack>
+            </div>
+          </Stack>
+        </Stack>
+      </Card>
+    </div>
+  );
+}

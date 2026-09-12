@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { MessageCircle, X } from 'lucide-react';
+import { Button, Flex, Text } from '@av-digital/components';
 
 export default function ChatWithGPT() {
   const [messages, setMessages] = useState<{ from: 'user' | 'bot'; text: string }[]>([]);
@@ -45,17 +46,17 @@ export default function ChatWithGPT() {
       )}
 
       {isOpen && (
-        <div className="fixed z-1 bottom-4 right-4 w-80 h-[500px] bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden border border-gray-300 animate-fade-in">
-          <div className="bg-blue-600 text-white p-3 flex justify-between items-center">
-            <span className="font-semibold">Assitente Virtual</span>
+        <Flex direction="column" className="fixed z-1 bottom-4 right-4 w-80 max-w-[calc(100vw-2rem)] h-[500px] max-h-[80vh] bg-white rounded-lg shadow-2xl overflow-hidden border border-gray-300 animate-fade-in">
+          <Flex justify="between" align="center" className="bg-blue-600 text-white p-3">
+            <Text variant="body" weight="bold" classname="text-white">Assitente Virtual</Text>
             <button onClick={() => setIsOpen(false)}>
               <X className="w-5 h-5 hover:text-gray-200 transition" />
             </button>
-          </div>
+          </Flex>
 
-          <div className="flex-1 p-3 overflow-auto space-y-2 bg-gray-50">
+          <Flex direction="column" gap="sm" className="flex-1 p-3 overflow-auto bg-gray-50">
             {messages.length === 0 && (
-              <p className="text-gray-500 italic">Converse comigo...</p>
+              <Text variant="caption" classname="italic">Converse comigo...</Text>
             )}
             {messages.map((msg, idx) => (
               <div
@@ -69,10 +70,10 @@ export default function ChatWithGPT() {
                 {msg.text}
               </div>
             ))}
-            {loading && <p className="text-gray-500 italic">Escrevendo...</p>}
-          </div>
+            {loading && <Text variant="caption" classname="italic">Escrevendo...</Text>}
+          </Flex>
 
-          <div className="p-3 border-t flex gap-2">
+          <Flex gap="sm" className="p-3 border-t">
             <input
               type="text"
               value={input}
@@ -82,15 +83,16 @@ export default function ChatWithGPT() {
               disabled={loading}
               className="flex-1 border rounded px-3 py-1 text-sm focus:outline-none"
             />
-            <button
+            <Button
               onClick={sendMessage}
-              disabled={loading}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm disabled:opacity-50"
+              variant="primary"
+              className="rounded text-sm disabled:opacity-50"
+              {...({ disabled: loading } as React.HTMLAttributes<HTMLButtonElement>)}
             >
               Enviar
-            </button>
-          </div>
-        </div>
+            </Button>
+          </Flex>
+        </Flex>
       )}
     </>
   );

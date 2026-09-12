@@ -2,6 +2,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import moment from "moment";
+import { Card, Flex, Spinner, Text } from "@av-digital/components";
 
 export default function Curriculums() {
   interface Curriculum {
@@ -33,7 +34,7 @@ export default function Curriculums() {
       .get("http://localhost:3001")
       .then((response) => setCurriculums(response.data))
       .catch((error) => console.log(error));
-  });
+  }, []);
 
   const [mensagem, setMensagem] = useState("");
   const mensagens = [
@@ -54,17 +55,17 @@ export default function Curriculums() {
   }, []);
   return (
     <>
-      <div className="flex flex-wrap max-h-screen justify-center items-center overflow-y-scroll">
-        <div className="w-[90%] m-[0 auto] mt-10">
-          <h2 className="text-3xl font-bold">Currículos Recentes</h2>
-          <p className="text-gray-400">veja os curriculos mais recentes</p>
+      <Flex wrap justify="center" align="center" className="max-h-screen overflow-y-scroll">
+        <div className="w-[90%] mx-auto mt-10">
+          <Text variant="title" size="xl" weight="bold">Currículos Recentes</Text>
+          <Text variant="caption" classname="text-gray-400">veja os curriculos mais recentes</Text>
         </div>
-        <div className="flex flex-wrap gap-10 w-[90%] m-[0 auto] mt-10">
+        <Flex wrap gap="xl" className="w-[90%] mx-auto mt-10">
           {curriculums.length > 0 ? (
             curriculums.map((curriculum) => (
-              <div key={curriculum._id} className="flex">
-                <div className="flex flex-col gap-2">
-                  <div className="flex w-[300px] h-[270px] bg-white rounded-lg shadow-md p-4 justify-center items-center">
+              <Flex key={curriculum._id}>
+                <Flex direction="column" gap="sm">
+                  <Card spacing="md" className="flex w-[300px] max-w-full h-[270px] bg-white rounded-lg justify-center items-center">
                     <div
                       style={{ fontFamily: curriculum.fontFamily }}
                       className="flex hover:w-[220px] hover:h-[270px] transition-ease-in duration-300 w-[205px] h-[250px]  shadow-2xl p-1 text-[0.5rem]"
@@ -130,32 +131,30 @@ export default function Curriculums() {
                         <p className="text-[0.3rem]">{curriculum.color1}</p>
                       </div>
                     </div>
-                  </div>
+                  </Card>
                   <div>
                     <h1 className="font-bold text-[#353535]">
                       {curriculum.name}
                     </h1>
-                    <p className="text-gray-400 text-[15px]">
+                    <Text variant="caption" classname="text-gray-400 text-[15px]">
                       {moment(curriculum.data).format("LLL")}
-                    </p>
+                    </Text>
                   </div>
-                </div>
-              </div>
+                </Flex>
+              </Flex>
             ))
           ) : (
-            <div className="flex justify-center items-center h-screen">
-              <div className="flex flex-col items-center">
-                <div className="w-24 h-24 border-8 border-gray-200 border-t-blue-500 rounded-full animate-spin">
-                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-blue-500 rounded-full"></div>
-                </div>
-                <p className="text-2xl font-bold mt-4 text-gray-600">
+            <Flex justify="center" align="center" className="h-screen">
+              <Flex direction="column" align="center">
+                <Spinner variant="primary" />
+                <Text variant="subtitle" size="lg" weight="bold" classname="mt-4 text-gray-600">
                   {mensagem}
-                </p>
-              </div>
-            </div>
+                </Text>
+              </Flex>
+            </Flex>
           )}
-        </div>
-      </div>
+        </Flex>
+      </Flex>
     </>
   );
 }
