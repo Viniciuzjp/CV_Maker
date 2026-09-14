@@ -1,95 +1,120 @@
 "use client";
 
 import Link from "next/link";
-import { IoMenu } from "react-icons/io5";
-import { GiPolarBear } from "react-icons/gi";
-import { VscGithubProject } from "react-icons/vsc";
-import { PiReadCvLogo } from "react-icons/pi";
-import { TiHomeOutline } from "react-icons/ti";
-import { RiLogoutCircleLine } from "react-icons/ri";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { FaRegBell } from "react-icons/fa";
-import { Flex, Text } from "@av-digital/components";
+import { IoClose, IoMenu } from "react-icons/io5";
+import { PiReadCvLogoBold } from "react-icons/pi";
+import { Button, Flex, Text } from "@av-digital/components";
+
+const navLinks = [
+  { href: "/", label: "Novo Currículo" },
+  { href: "/curriculums", label: "Meus Currículos" },
+];
 
 export default function Header() {
-  const [count, setCount] = useState(0);
-  const handleShowSideBar = () => {
-    const sideBar = document.getElementById("sideBar");
-    if (sideBar) {
-      sideBar.style.height = "100vh";
-      sideBar.style.transition = "height 0.5s";
-      setCount(count + 1);
-    }
-    if (sideBar && count === 1) {
-      sideBar.style.height = "65px";
-      setCount(count - 1);
-    }
-  };
-
-  const handleLogout = () => {
-    if (localStorage) {
-      localStorage?.clear();
-    }
-  };
+  const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <>
-      <div
-        id="sideBar"
-        className="flex z-2 flex-col h-[65px] bg-white fixed w-[60px] gap-3 items-center max-md shadow-md"
+    <header className="sticky top-0 z-50 bg-white shadow-md">
+      <Flex
+        justify="between"
+        align="center"
+        className="h-16 px-6 max-md:px-4"
       >
-        <IoMenu
-          onClick={handleShowSideBar}
-          className="mt-3 absolute"
-          size={40}
-          color="#737373"
-        /> 
-        <TiHomeOutline
-          className="mt-20 size-[25px] hover:rotate-45 transition-ease-in duration-300 hover:size-[25px]"
-          size={35}
-          color="#737373"
-        />
-        <VscGithubProject
-          className="mt-3 size-[25px] hover:rotate-45 transition-ease-in duration-300 hover:size-[25px]"
-          size={35}
-          color="#737373"
-        />
-        <PiReadCvLogo
-          className="mt-3 size-[25px] hover:rotate-45 transition-ease-in duration-300 hover:size-[25px]"
-          size={35}
-          color="#737373"
-        />
-        <FaRegBell
-          className="mt-3 size-[25px] hover:rotate-45 transition-ease-in duration-300 hover:size-[25px]"
-          size={35}
-          color="#737373"
-        />
-        <RiLogoutCircleLine
-          onClick={handleLogout}
-          className="mt-3 size-[25px] hover:rotate-45 transition-ease-in duration-300 hover:size-[25px]"
-          size={35}
-          color="#737373"
-        />
-      </div>
-      <Flex justify="between" align="center" className="shadow-md w-screen h-[65px]">
-        <div className="ml-20">
-          <Link href={"/"}>
-            <GiPolarBear size={50} color="#ffffff" />
-          </Link>
-        </div>
-        <Flex className="mr-3">
-          <div className="text-center">
-            <Link href={"/login"}>
-              <Text variant="body" weight="bold" classname="mr-3 p-3">Log in</Text>
+        <Link href="/" className="flex items-center gap-2 shrink-0">
+          <PiReadCvLogoBold size={26} color="#2563eb" />
+          <Text variant="title" size="md" weight="bold">
+            CV Maker
+          </Text>
+        </Link>
+
+        <Flex gap="lg" align="center" className="max-md:hidden">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={
+                pathname === link.href
+                  ? "text-sm font-semibold text-[#2563eb]"
+                  : "text-sm font-medium text-gray-600 hover:text-[#2563eb] transition-colors"
+              }
+            >
+              {link.label}
             </Link>
-          </div>
-          <div className="bg-[#202020] rounded-[40px] w-[100px] text-center">
-            <Link href={"/register"}>
-              <Text variant="body" weight="bold" classname="text-white p-3">Sign up</Text>
-            </Link>
-          </div>
+          ))}
         </Flex>
+
+        <Flex gap="sm" align="center" className="max-md:hidden">
+          <Link href="/login">
+            <Button variant="secondary" size="sm">
+              Log in
+            </Button>
+          </Link>
+          <Link href="/register">
+            <Button variant="primary" size="sm">
+              Sign up
+            </Button>
+          </Link>
+        </Flex>
+
+        <button
+          type="button"
+          aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
+          onClick={() => setMenuOpen((open) => !open)}
+          className="hidden max-md:flex items-center justify-center"
+        >
+          {menuOpen ? (
+            <IoClose size={26} color="#333" />
+          ) : (
+            <IoMenu size={26} color="#333" />
+          )}
+        </button>
       </Flex>
-    </>
+
+      {menuOpen && (
+        <Flex
+          direction="column"
+          gap="md"
+          className="hidden max-md:flex px-6 pb-6 border-t border-gray-100"
+        >
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={() => setMenuOpen(false)}
+              className={
+                pathname === link.href
+                  ? "pt-4 text-sm font-semibold text-[#2563eb]"
+                  : "pt-4 text-sm font-medium text-gray-600"
+              }
+            >
+              {link.label}
+            </Link>
+          ))}
+          <Flex gap="sm" className="pt-2">
+            <Link
+              href="/login"
+              onClick={() => setMenuOpen(false)}
+              className="flex-1"
+            >
+              <Button variant="secondary" className="w-full">
+                Log in
+              </Button>
+            </Link>
+            <Link
+              href="/register"
+              onClick={() => setMenuOpen(false)}
+              className="flex-1"
+            >
+              <Button variant="primary" className="w-full">
+                Sign up
+              </Button>
+            </Link>
+          </Flex>
+        </Flex>
+      )}
+    </header>
   );
 }

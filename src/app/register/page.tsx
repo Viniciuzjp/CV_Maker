@@ -4,6 +4,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Button, Card, Flex, Stack, Text } from "@av-digital/components";
+import { API_BASE_URL } from "@/app/config";
 
 export default function Register() {
   const [data, setData] = useState({
@@ -41,7 +42,7 @@ export default function Register() {
       return;
     }
     axios
-      .post("http://localhost:3001/register", data)
+      .post(`${API_BASE_URL}/register`, data)
       .then((response) => setData(response.data))
       .catch((error) => console.log(error));
   };

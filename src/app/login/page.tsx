@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Link from "next/link";
 import { Button, Card, Flex, Stack, Text } from "@av-digital/components";
+import { API_BASE_URL } from "@/app/config";
 
 export default function Login() {
 
@@ -40,7 +41,7 @@ export default function Login() {
         if(data.email == "" || data.password == ""){
             alert("Por favor, preencha todos os campos")
         }
-        axios.post('http://localhost:3001/login', data)
+        axios.post(`${API_BASE_URL}/login`, data)
         .then((response) => setUser(response.data))
         .catch((error) => console.log(error))
     }

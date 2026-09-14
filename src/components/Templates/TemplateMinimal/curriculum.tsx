@@ -2,14 +2,14 @@ import { useResume } from "@/app/hooks/useResumeContext";
 import { Card, Flex, Stack, Text } from "@av-digital/components";
 import {
   BulletList,
-  SectionTitle,
+  MinimalSectionTitle,
   ExperienceList,
   hasExperienceContent,
   ProjectsList,
   hasProjectsContent,
 } from "../shared";
 
-export default function TemplateOneColumn() {
+export default function TemplateMinimal() {
   const {
     resume,
     RenderEmail,
@@ -18,7 +18,6 @@ export default function TemplateOneColumn() {
     renderLinkedin,
     renderGithub,
   } = useResume();
-
 
   return (
     <div
@@ -30,8 +29,7 @@ export default function TemplateOneColumn() {
         width: "min(33.59rem, 100%)",
         aspectRatio: "210 / 297",
         display: "flex",
-        flexDirection: "row",
-        alignItems: "stretch",
+        flexDirection: "column",
         ...(resume.fontFamily ? { "--av-font-family": resume.fontFamily } : {}),
         ...(resume.fontSize
           ? {
@@ -42,22 +40,14 @@ export default function TemplateOneColumn() {
           : {}),
       } as React.CSSProperties}
     >
-      <div
-        id="lineCV"
-        style={{
-          backgroundColor: resume.background,
-          width: "8px",
-          margin: "0.25rem 0",
-        }}
-      />
-      <Card spacing="lg" className="cv-content">
+      <Card spacing="lg" className="cv-content-full">
         <Stack gap="lg">
-          <Stack gap="sm" classname="cv-header">
+          <Flex direction="column" align="center" gap="sm" className="cv-header">
             <Text variant="title" size="lg" weight="bold">
               <span style={{ color: resume.colorText }}>{resume.name}</span>
             </Text>
 
-            <Flex justify="between" wrap gap="sm">
+            <Flex justify="center" align="center" wrap gap="sm">
               <Flex gap="xs" align="center">
                 {renderLocation()}
                 <Text variant="caption" size="xs">{resume.address}</Text>
@@ -79,23 +69,23 @@ export default function TemplateOneColumn() {
                 <Text variant="caption" size="xs">{resume.github}</Text>
               </Flex>
             </Flex>
-          </Stack>
+          </Flex>
 
           <Stack gap="sm">
             {resume.objective && (
               <>
-                <SectionTitle color={resume.colorText} accentColor={resume.background}>
+                <MinimalSectionTitle color={resume.colorText}>
                   Objective
-                </SectionTitle>
+                </MinimalSectionTitle>
                 <Text variant="caption" size="xs">{resume.objective}</Text>
               </>
             )}
 
             {hasExperienceContent(resume.experiences) && (
               <>
-                <SectionTitle color={resume.colorText} accentColor={resume.background}>
+                <MinimalSectionTitle color={resume.colorText}>
                   Experience
-                </SectionTitle>
+                </MinimalSectionTitle>
                 <ExperienceList experiences={resume.experiences} />
               </>
             )}
@@ -104,36 +94,36 @@ export default function TemplateOneColumn() {
               <Stack gap="sm">
                 {resume.education && (
                   <>
-                    <SectionTitle color={resume.colorText} accentColor={resume.background}>
+                    <MinimalSectionTitle color={resume.colorText}>
                       Education
-                    </SectionTitle>
+                    </MinimalSectionTitle>
                     <Text variant="caption" size="xs">{resume.education}</Text>
                   </>
                 )}
 
                 {resume.skills && (
                   <>
-                    <SectionTitle color={resume.colorText} accentColor={resume.background}>
+                    <MinimalSectionTitle color={resume.colorText}>
                       Skills
-                    </SectionTitle>
+                    </MinimalSectionTitle>
                     <BulletList text={resume.skills} />
                   </>
                 )}
 
                 {resume.languages && (
                   <>
-                    <SectionTitle color={resume.colorText} accentColor={resume.background}>
+                    <MinimalSectionTitle color={resume.colorText}>
                       Languages
-                    </SectionTitle>
+                    </MinimalSectionTitle>
                     <Text variant="caption" size="xs">{resume.languages}</Text>
                   </>
                 )}
 
                 {hasProjectsContent(resume.projects) && (
                   <>
-                    <SectionTitle color={resume.colorText} accentColor={resume.background}>
+                    <MinimalSectionTitle color={resume.colorText}>
                       Projects
-                    </SectionTitle>
+                    </MinimalSectionTitle>
                     <ProjectsList projects={resume.projects} />
                   </>
                 )}

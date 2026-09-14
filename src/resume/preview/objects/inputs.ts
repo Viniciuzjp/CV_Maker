@@ -1,4 +1,16 @@
-import { useResume } from "@/app/hooks/useResumeContext";
+import { useResume, ResumeField } from "@/app/hooks/useResumeContext";
+
+type FormField = {
+  id: number;
+  name: ResumeField;
+  value: string;
+  type?: string;
+  kind?: string;
+  placeholder?: string;
+  elId?: string;
+  wrapperId?: string;
+  addCardId?: string;
+};
 
 export function useResumeInputs() {
   const { resume } = useResume();
@@ -40,8 +52,6 @@ export function useResumeInputs() {
       value: resume.linkedin,
       wrapperId: "linkedin",
       addCardId: "addLinkedinCard",
-      // onAdd: handleAddLinkedin,
-      onDelete: "",
     },
     {
       id: 6,
@@ -51,10 +61,8 @@ export function useResumeInputs() {
       value: resume.github,
       wrapperId: "github",
       addCardId: "addGithubCard",
-      // onAdd: handleAddGit,
-      onDelete: "",
     },
-  ];
+  ] satisfies FormField[];
 
   const EducationInputs = [
     {
@@ -81,15 +89,7 @@ export function useResumeInputs() {
       placeholder: "Your languages",
       value: resume.languages,
     },
-    {
-      id: 4,
-      kind: "text",
-      elId: "inputProjects",
-      name: "projects",
-      placeholder: "Your projects",
-      value: resume.projects,
-    },
-  ];
+  ] satisfies FormField[];
 
   const ExperienceInputs = [
     {
@@ -99,49 +99,7 @@ export function useResumeInputs() {
       placeholder: "Say more about your objective",
       value: resume.objective,
     },
-    {
-      id: 2,
-      kind: "text",
-      name: "experience",
-      placeholder: "Your Experience",
-      value: resume.experience,
-    },
-    {
-      id: 3,
-      kind: "text",
-      name: "experienceDate",
-      placeholder: "Date",
-      value: resume.experienceDate,
-    },
-    {
-      id: 4,
-      kind: "textarea",
-      elId: "txtAreaExperience",
-      name: "experienceDescription",
-      value: resume.experienceDescription,
-    },
-    {
-      id: 5,
-      kind: "text",
-      name: "experience2",
-      placeholder: "Your Experience",
-      value: resume.experience2,
-    },
-    {
-      id: 6,
-      kind: "text",
-      name: "experienceDate2",
-      placeholder: "Date",
-      value: resume.experienceDate2,
-    },
-    {
-      id: 7,
-      kind: "textarea",
-      elId: "txtAreaExperience2",
-      name: "experienceDescription2",
-      value: resume.experienceDescription2,
-    },
-  ];
+  ] satisfies FormField[];
 
   return { Inputs, EducationInputs, ExperienceInputs };
 }

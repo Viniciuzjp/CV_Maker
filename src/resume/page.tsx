@@ -1,10 +1,6 @@
 "use client";
 import { useState } from "react";
-import { FaRegEyeSlash, FaTrashAlt } from "react-icons/fa";
-
-import { MdOutlineLibraryBooks } from "react-icons/md";
-
-import { TbDeviceImacPlus } from "react-icons/tb";
+import { FaTrashAlt } from "react-icons/fa";
 
 import { CiCirclePlus } from "react-icons/ci";
 import { RiFileCheckFill } from "react-icons/ri";
@@ -15,12 +11,30 @@ import InputComponent from "@/components/input/input";
 
 import { Button, Flex, Text } from "@av-digital/components";
 import { Preview } from "./preview/preview";
-import { useResume } from "@/app/hooks/useResumeContext";
+import { useResume, TemplateId } from "@/app/hooks/useResumeContext";
 import { useResumeInputs } from "./preview/objects/inputs";
 
-export default function Resume() {
+const templateOptions: { id: TemplateId; label: string }[] = [
+  { id: "default", label: "Modelo Original" },
+  { id: "two", label: "Modelo Duas Colunas" },
+  { id: "minimal", label: "Modelo Minimalista" },
+  { id: "band", label: "Modelo Faixa Colorida" },
+  { id: "sidebar-right", label: "Modelo Sidebar Direita" },
+];
 
-  const { resume, UpdateResume, modalSuccess, handleDeleteModal } = useResume()
+export default function Resume() {
+  const {
+    resume,
+    UpdateResume,
+    modalSuccess,
+    handleDeleteModal,
+    addExperience,
+    removeExperience,
+    updateExperience,
+    addProject,
+    removeProject,
+    updateProject,
+  } = useResume();
   const { Inputs, EducationInputs, ExperienceInputs } = useResumeInputs();
 
   const handleShowModal = () => {
@@ -37,7 +51,14 @@ export default function Resume() {
             gap="xs"
             className="fixed z-50 top-[20%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-[200px] w-[300px] max-w-[90vw] px-4 bg-white border-dashed border-2 border-gray-300 rounded-2xl text-center"
           >
-            <Text variant="title" size="xl" weight="bold" classname="text-gray-400">Success</Text>
+            <Text
+              variant="title"
+              size="xl"
+              weight="bold"
+              classname="text-gray-400"
+            >
+              Success
+            </Text>
             <RiFileCheckFill size={50} color="#74e839" />
             <Text variant="body" classname="text-gray-500">
               Your Curriculum has been saved successfully
@@ -45,74 +66,6 @@ export default function Resume() {
           </Flex>
         </div>
       );
-    }
-  };
-
-  const [count2, setCount2] = useState(0);
-  const hiddenClassObj = () => {
-    const objective = document.getElementById("objective");
-    const inputs = objective?.querySelectorAll("input");
-    const txtArea = objective?.querySelectorAll("textarea");
-    const icon2 = document.getElementById("eyeIcon2");
-    if (icon2) {
-      icon2.style.color = "gray";
-    }
-
-    if (count2 === 0) {
-      setCount2(count2 + 1);
-      inputs?.forEach((input) => {
-        input.disabled = true;
-      });
-      txtArea?.forEach((input) => {
-        input.disabled = true;
-      });
-    }
-    if (count2 === 1) {
-      inputs?.forEach((input) => {
-        input.disabled = false;
-        setCount2(count2 - 1);
-      });
-      txtArea?.forEach((input) => {
-        input.disabled = false;
-      });
-      if (icon2) {
-        icon2.style.color = "black";
-      }
-    }
-  };
-  const [count, setCount] = useState(0);
-  const hiddenClassEdu = () => {
-    const education = document.getElementById("education");
-    const inputs = education?.querySelectorAll("input");
-    const txtArea = education?.querySelectorAll("textarea");
-    const icon = document.getElementById("eyeIcon");
-    const container = document.getElementById("containerEdu");
-    if (icon) {
-      icon.style.color = "gray";
-    }
-
-    if (count === 0) {
-      setCount(count + 1);
-      container?.classList.add("hidden");
-      inputs?.forEach((input) => {
-        input.disabled = true;
-      });
-      txtArea?.forEach((input) => {
-        input.disabled = true;
-      });
-    }
-    if (count === 1) {
-      inputs?.forEach((input) => {
-        input.disabled = false;
-        setCount(count - 1);
-        container?.classList.remove("hidden");
-      });
-      txtArea?.forEach((input) => {
-        input.disabled = false;
-      });
-      if (icon) {
-        icon.style.color = "black";
-      }
     }
   };
 
@@ -176,10 +129,9 @@ export default function Resume() {
     UpdateResume("background", color.hex);
   }
 
-
   return (
     <>
-      <main className="flex max-md:flex-col h-screen w-screen max-md:h-auto max-md:min-h-screen overflow-hidden max-md:overflow-visible">
+      <main className="flex  max-md:flex-col h-screen w-full max-md:h-auto max-md:min-h-screen overflow-hidden max-md:overflow-visible">
         {handleShowModal()}
         <section
           id="main"
@@ -190,7 +142,7 @@ export default function Resume() {
             justify="center"
             align="center"
             gap="sm"
-            className="bg-white pt-5 pb-5 px-4 w-full h-auto mb-2 mt-10 shadow-md"
+            className="bg-white pt-5 pb-5 px-4 w-9/10 h-auto mb-2 mt-10 shadow-md"
           >
             {Inputs.slice(0, 4).map((item) => (
               <InputComponent
@@ -208,17 +160,24 @@ export default function Resume() {
                   <CiCirclePlus
                     id={item.addCardId}
                     onClick={
-                      item.name === "linkedin" ? handleAddLinkedin : handleAddGit
+                      item.name === "linkedin"
+                        ? handleAddLinkedin
+                        : handleAddGit
                     }
                     size={30}
                     color="gray"
                     style={{ display: "none", marginBottom: "10px" }}
                   />
                 </div>
-                <div id={item.wrapperId} className="flex items-center gap-2 w-full h-12">
+                <div
+                  id={item.wrapperId}
+                  className="flex items-center gap-2 w-full h-12"
+                >
                   <div className="flex-1 min-w-0">
                     <InputComponent
-                      onChange={(e) => UpdateResume(e.target.name, e.target.value)}
+                      onChange={(e) =>
+                        UpdateResume(e.target.name, e.target.value)
+                      }
                       type={item.type}
                       name={item.name}
                       placeholder={item.placeholder}
@@ -227,7 +186,9 @@ export default function Resume() {
                   </div>
                   <FaTrashAlt
                     onClick={
-                      item.name === "linkedin" ? handleDeleteLinkd : handleDeleteGit
+                      item.name === "linkedin"
+                        ? handleDeleteLinkd
+                        : handleDeleteGit
                     }
                     className="shrink-0"
                     size={25}
@@ -237,125 +198,144 @@ export default function Resume() {
               </div>
             ))}
           </Flex>
-          <div id="objective" className="w-full">
-            <Flex
-              direction="column"
-              align="center"
-              gap="sm"
-              className="bg-white w-full mt-10 mb-2 py-8 px-8 shadow-md"
-            >
-              <Flex justify="between" className="w-full">
-                <TbDeviceImacPlus
-                  size={30}
-                  color="gray"
-                  className="max-md:hidden"
-                />
-                <FaRegEyeSlash
-                  id="eyeIcon2"
-                  onClick={hiddenClassObj}
-                  size={30}
-                  color="black"
-                  className="max-md:hidden"
-                />
-              </Flex>
-              <InputComponent
-                id="inputObjective"
-                onChange={(e) => UpdateResume(e.target.name, e.target.value)}
-                type={ExperienceInputs[0].kind}
-                name={ExperienceInputs[0].name}
-                placeholder={ExperienceInputs[0].placeholder}
-                value={ExperienceInputs[0].value}
-              />
-              <Flex gap="lg" className="w-full h-12 max-md:flex-col max-md:h-auto max-md:gap-2">
-                {ExperienceInputs.slice(1, 3).map((item) => (
-                  <div key={item.id} className="flex-1 min-w-0 max-md:w-full">
+          <Flex
+            direction="column"
+            align="center"
+            justify="center"
+            gap="sm"
+            className="bg-white w-9/10 mt-10 mb-2 py-8 px-8 shadow-md"
+          >
+            <InputComponent
+              id="inputObjective"
+              onChange={(e) => UpdateResume(e.target.name, e.target.value)}
+              type={ExperienceInputs[0].kind}
+              name={ExperienceInputs[0].name}
+              placeholder={ExperienceInputs[0].placeholder}
+              value={ExperienceInputs[0].value}
+            />
+            {resume.experiences.map((exp) => (
+              <div key={exp.id} className="w-full">
+                <Flex
+                  gap="lg"
+                  align="center"
+                  className="w-full h-12 max-md:flex-col max-md:h-auto max-md:gap-2"
+                >
+                  <div className="flex-1 min-w-0 max-md:w-full">
                     <InputComponent
-                      onChange={(e) => UpdateResume(e.target.name, e.target.value)}
-                      type={item.kind}
-                      name={item.name}
-                      placeholder={item.placeholder}
-                      value={item.value}
+                      onChange={(e) =>
+                        updateExperience(exp.id, "title", e.target.value)
+                      }
+                      type="text"
+                      name={`experience-title-${exp.id}`}
+                      placeholder="Your Experience"
+                      value={exp.title}
                     />
                   </div>
-                ))}
-              </Flex>
-              <textarea
-                onChange={(e) => UpdateResume(e.target.name, e.target.value)}
-                value={ExperienceInputs[3].value}
-                className="block w-full h-24 border pt-3 pl-5 rounded-md overflow-hidden outline-0 border-gray-300 placeholder:text-gray-400 text-gray-500"
-                name={ExperienceInputs[3].name}
-                id={ExperienceInputs[3].elId}
-              />
-              <Flex gap="lg" className="w-full h-12 max-md:flex-col max-md:h-auto max-md:gap-2">
-                {ExperienceInputs.slice(4, 6).map((item) => (
-                  <div key={item.id} className="flex-1 min-w-0 max-md:w-full">
+                  <div className="flex-1 min-w-0 max-md:w-full">
                     <InputComponent
-                      onChange={(e) => UpdateResume(e.target.name, e.target.value)}
-                      type={item.kind}
-                      name={item.name}
-                      placeholder={item.placeholder}
-                      value={item.value}
+                      onChange={(e) =>
+                        updateExperience(exp.id, "date", e.target.value)
+                      }
+                      type="text"
+                      name={`experience-date-${exp.id}`}
+                      placeholder="Date"
+                      value={exp.date}
                     />
                   </div>
-                ))}
-              </Flex>
-              <textarea
-                onChange={(e) => UpdateResume(e.target.name, e.target.value)}
-                value={ExperienceInputs[6].value}
-                className="block w-full h-24 border pt-3 pl-5 rounded-md overflow-hidden outline-0 border-gray-300 placeholder:text-gray-400 text-gray-500"
-                name={ExperienceInputs[6].name}
-                id={ExperienceInputs[6].elId}
-              />
-            </Flex>
-          </div>
-          <div id="education" className="w-full">
-            <Flex
-              direction="column"
-              align="center"
-              gap="sm"
-              className="bg-white w-full mt-10 mb-2 py-8 px-8 shadow-md"
-            >
-              <Flex justify="between" className="w-full">
-                <MdOutlineLibraryBooks
-                  size={30}
-                  color="gray"
-                  className="max-md:hidden"
+                  {resume.experiences.length > 1 && (
+                    <FaTrashAlt
+                      onClick={() => removeExperience(exp.id)}
+                      className="shrink-0"
+                      size={22}
+                      color="gray"
+                    />
+                  )}
+                </Flex>
+                <textarea
+                  onChange={(e) =>
+                    updateExperience(exp.id, "description", e.target.value)
+                  }
+                  value={exp.description}
+                  className="block w-full h-24 border pt-3 pl-5 mt-3 rounded-md overflow-hidden outline-0 border-gray-300 placeholder:text-gray-400 text-gray-500"
+                  name={`experience-description-${exp.id}`}
                 />
-                <FaRegEyeSlash
-                  id="eyeIcon"
-                  onClick={hiddenClassEdu}
-                  size={30}
-                  color="black"
-                  className="max-md:hidden"
+              </div>
+            ))}
+            <Button onClick={addExperience} variant="secondary" className="rounded">
+              + Add Experience
+            </Button>
+          </Flex>
+
+          <Flex
+            direction="column"
+            align="center"
+            gap="sm"
+            className="bg-white w-9/10 mt-10 mb-2 py-8 px-8 shadow-md"
+          >
+            {EducationInputs.map((item) =>
+              item.kind === "textarea" ? (
+                <textarea
+                  key={item.id}
+                  id={item.elId}
+                  onChange={(e) => UpdateResume(e.target.name, e.target.value)}
+                  value={item.value}
+                  name={item.name}
+                  placeholder={item.placeholder}
+                  className="w-full h-24 border pt-2 pl-5 rounded-md outline-0 border-gray-300 placeholder:text-gray-400 text-gray-500"
+                ></textarea>
+              ) : (
+                <InputComponent
+                  key={item.id}
+                  id={item.elId}
+                  onChange={(e) => UpdateResume(e.target.name, e.target.value)}
+                  type={item.kind}
+                  name={item.name}
+                  placeholder={item.placeholder}
+                  value={item.value}
                 />
-              </Flex>
-              {EducationInputs.map((item) =>
-                item.kind === "textarea" ? (
-                  <textarea
-                    key={item.id}
-                    id={item.elId}
-                    onChange={(e) => UpdateResume(e.target.name, e.target.value)}
-                    value={item.value}
-                    name={item.name}
-                    placeholder={item.placeholder}
-                    className="w-full h-24 border pt-2 pl-5 rounded-md outline-0 border-gray-300 placeholder:text-gray-400 text-gray-500"
-                  ></textarea>
-                ) : (
+              ),
+            )}
+          </Flex>
+
+          <Flex
+            direction="column"
+            align="center"
+            gap="sm"
+            className="bg-white w-9/10 mt-10 mb-2 py-8 px-8 shadow-md"
+          >
+            {resume.projects.map((proj) => (
+              <div
+                key={proj.id}
+                className="flex items-center gap-2 w-full"
+              >
+                <div className="flex-1 min-w-0">
                   <InputComponent
-                    key={item.id}
-                    id={item.elId}
-                    onChange={(e) => UpdateResume(e.target.name, e.target.value)}
-                    type={item.kind}
-                    name={item.name}
-                    placeholder={item.placeholder}
-                    value={item.value}
+                    onChange={(e) => updateProject(proj.id, e.target.value)}
+                    type="text"
+                    name={`project-${proj.id}`}
+                    placeholder="Your project"
+                    value={proj.text}
                   />
-                )
-              )}
-            </Flex>
-          </div>
+                </div>
+                {resume.projects.length > 1 && (
+                  <FaTrashAlt
+                    onClick={() => removeProject(proj.id)}
+                    className="shrink-0"
+                    size={22}
+                    color="gray"
+                  />
+                )}
+              </div>
+            ))}
+            <Button onClick={addProject} variant="secondary" className="rounded">
+              + Add Project
+            </Button>
+          </Flex>
+
           <Flex justify="center" align="center" className="md:hidden pb-10">
-            <Text variant="title" size="xl" weight="bold">Customization</Text>
+            <Text variant="title" size="xl" weight="bold">
+              Customization
+            </Text>
           </Flex>
           <div className="mb-[100px]">
             <ColorPickerWrapper
@@ -364,25 +344,23 @@ export default function Resume() {
             />
           </div>
           <Flex direction="column" align="center" className="mb-[100px]">
-            <Flex gap="md" className="mb-4">
-              <Button
-                onClick={() => handleSelectTemplate("default")}
-                variant={selectedTemplate === "default" ? "primary" : "secondary"}
-                className="rounded"
-              >
-                Modelo Original
-              </Button>
-              <Button
-                onClick={() => handleSelectTemplate("two")}
-                variant={selectedTemplate === "two" ? "primary" : "secondary"}
-                className="rounded"
-              >
-                Modelo Duas Colunas
-              </Button>
+            <Flex gap="md" wrap className="mb-4">
+              {templateOptions.map((option) => (
+                <Button
+                  key={option.id}
+                  onClick={() => handleSelectTemplate(option.id)}
+                  variant={
+                    selectedTemplate === option.id ? "primary" : "secondary"
+                  }
+                  className="rounded"
+                >
+                  {option.label}
+                </Button>
+              ))}
             </Flex>
           </Flex>
         </section>
-        <Preview/>
+        <Preview />
       </main>
     </>
   );

@@ -1,14 +1,24 @@
 "use client";
-import { useResume } from "@/app/hooks/useResumeContext";
+import { useResume, TemplateId } from "@/app/hooks/useResumeContext";
 import TemplateTwoColumns from "@/components/Templates/TemplateColum/curriculum";
 import TemplateOneColumn from "@/components/Templates/TemplateMain/curriculum";
+import TemplateMinimal from "@/components/Templates/TemplateMinimal/curriculum";
+import TemplateHeaderBand from "@/components/Templates/TemplateHeaderBand/curriculum";
+import TemplateSidebarRight from "@/components/Templates/TemplateSidebarRight/curriculum";
 import { Button, Flex } from "@av-digital/components";
 import { AnimatePresence, motion } from "framer-motion";
-import { toPng } from "html-to-image";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { FaCheck } from "react-icons/fa";
 import { TbTextSize } from "react-icons/tb";
-import jsPDF from "jspdf";
+import generatePDF, { Resolution } from "react-to-pdf";
+
+const templateComponents: Record<TemplateId, React.ComponentType> = {
+  default: TemplateOneColumn,
+  two: TemplateTwoColumns,
+  minimal: TemplateMinimal,
+  band: TemplateHeaderBand,
+  "sidebar-right": TemplateSidebarRight,
+};
 
 export const Preview = () => {
   const {
@@ -19,7 +29,7 @@ export const Preview = () => {
     selectedTemplate,
   } = useResume();
 
-  const [font, setFont] = useState({
+  const [font] = useState({
     Roboto: "Roboto",
     Poppins: "Poppins",
     Regular: "Regular",
@@ -51,38 +61,16 @@ export const Preview = () => {
     lucidaCalligraphy: "lucidaCalligraphy",
   });
 
-  const handleDownload = async () => {
-    const element = pdfRef.current;
-    if (!element) return;
+  const ActiveTemplate = templateComponents[selectedTemplate];
 
-    try {
-      const dataUrl = await toPng(element, {
-        quality: 1,
-        cacheBust: true,
-        pixelRatio: 2,
-      });
-
-      const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "px",
-        format: [element.offsetWidth, element.offsetHeight],
-      });
-
-      pdf.addImage(
-        dataUrl,
-        "PNG",
-        0,
-        0,
-        element.offsetWidth,
-        element.offsetHeight,
-      );
-      pdf.save("curriculo.pdf");
-    } catch (error) {
-      console.error("Erro ao gerar PDF:", error);
-    }
+  const handleDownload = () => {
+    const getTargetElement = () => document.getElementById("cv");
+    generatePDF(getTargetElement, {
+      filename: "curriculo.pdf",
+      resolution: Resolution.HIGH,
+      page: { format: "a4", orientation: "portrait" },
+    });
   };
-
-  const pdfRef = useRef<HTMLDivElement>(null);
 
   const [countLine, setCountLine] = useState(0);
   const handleShowLineCV = () => {
@@ -102,8 +90,8 @@ export const Preview = () => {
 
   return (
     <>
-      <div className="w-1/2 min-w-0 px-10 max-md:w-full max-md:px-4">
-        <Flex className="w-full h-[30px] max-md:h-auto max-md:flex-col max-md:items-stretch max-md:gap-2 max-md:py-2 shadow-md">
+      <div className="w-1/2 min-w-0 px-10 max-md:w-full ">
+        <Flex className="w-full h-[30px] max-md:h-auto max-md:flex-col max-md:items-stretch max-md:gap-2 max-md:py-3 shadow-md">
           <select
             name="fontFamily"
             id="font"
@@ -131,32 +119,19 @@ export const Preview = () => {
             />
           </Flex>
         </Flex>
-        <Flex align="center" justify="center" className="w-full">
+        <Flex align="center" justify="center" className="w-full py-4">
         <AnimatePresence mode="wait">
-          <div ref={pdfRef} id="pdfElement" className="w-full">
-            {selectedTemplate === "default" ? (
-              <motion.div
-                key="template-1"
-                className="w-full"
-                initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 30 }}
-                transition={{ duration: 0.4 }}
-              >
-                <TemplateOneColumn />
-              </motion.div>
-            ) : (
-              <motion.div
-                key="template-2"
-                className="w-full"
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -30 }}
-                transition={{ duration: 0.4 }}
-              >
-                <TemplateTwoColumns />
-              </motion.div>
-            )}
+          <div id="pdfElement" className="w-full">
+            <motion.div
+              key={selectedTemplate}
+              className="w-full"
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -30 }}
+              transition={{ duration: 0.4 }}
+            >
+              <ActiveTemplate />
+            </motion.div>
           </div>
         </AnimatePresence>
         </Flex>

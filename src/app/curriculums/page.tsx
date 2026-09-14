@@ -3,12 +3,13 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import CurriculumTypeProps from "./interface";
 import { Button, Card, Flex, Spinner, Text } from "@av-digital/components";
+import { API_BASE_URL } from "@/app/config";
 
 export default function Curriculums() {
     const [curriculums, setCurriculums] = useState<CurriculumTypeProps[]>([]);
 
     useEffect(() => {
-        axios.get("http://localhost:3001")
+        axios.get(API_BASE_URL)
         .then((response) => setCurriculums(response.data))
         .catch((error) => console.log(error))
     }, [])

@@ -9,7 +9,7 @@ import {
   hasProjectsContent,
 } from "../shared";
 
-export default function TemplateTwoColumns() {
+export default function TemplateHeaderBand() {
   const {
     resume,
     RenderEmail,
@@ -29,8 +29,7 @@ export default function TemplateTwoColumns() {
         width: "min(33.59rem, 100%)",
         aspectRatio: "210 / 297",
         display: "flex",
-        flexDirection: "row",
-        alignItems: "stretch",
+        flexDirection: "column",
         ...(resume.fontFamily ? { "--av-font-family": resume.fontFamily } : {}),
         ...(resume.fontSize
           ? {
@@ -41,19 +40,13 @@ export default function TemplateTwoColumns() {
           : {}),
       } as React.CSSProperties}
     >
-      <div
-        className="cv-sidebar"
-        style={{
-          backgroundColor: resume.background,
-          width: "35%",
-        }}
-      >
-        <Stack gap="md">
+      <div className="cv-band" style={{ backgroundColor: resume.background }}>
+        <Stack gap="sm">
           <Text variant="title" size="lg" weight="bold">
             <span style={{ color: "#fff" }}>{resume.name}</span>
           </Text>
 
-          <Stack gap="sm">
+          <Flex wrap gap="sm">
             <Flex gap="xs" align="center">
               {renderLocation()}
               <Text variant="caption" size="xs">
@@ -84,32 +77,12 @@ export default function TemplateTwoColumns() {
                 <span style={{ color: "#fff" }}>{resume.github}</span>
               </Text>
             </Flex>
-          </Stack>
-
-          {resume.skills && (
-            <Stack gap="sm">
-              <SectionTitle color="#fff" accentColor="#fff">
-                Skills
-              </SectionTitle>
-              <BulletList text={resume.skills} />
-            </Stack>
-          )}
-
-          {resume.languages && (
-            <Stack gap="sm">
-              <SectionTitle color="#fff" accentColor="#fff">
-                Languages
-              </SectionTitle>
-              <Text variant="caption" size="xs">
-                <span style={{ color: "#fff" }}>{resume.languages}</span>
-              </Text>
-            </Stack>
-          )}
+          </Flex>
         </Stack>
       </div>
 
-      <Card spacing="lg" className="cv-content-main">
-        <Stack gap="md">
+      <Card spacing="lg" className="cv-content-full">
+        <Stack gap="sm">
           {resume.objective && (
             <>
               <SectionTitle color={resume.colorText} accentColor={resume.background}>
@@ -127,6 +100,29 @@ export default function TemplateTwoColumns() {
               <ExperienceList experiences={resume.experiences} />
             </>
           )}
+
+          <Flex gap="lg" wrap>
+            <Stack gap="sm">
+              {resume.skills && (
+                <>
+                  <SectionTitle color={resume.colorText} accentColor={resume.background}>
+                    Skills
+                  </SectionTitle>
+                  <BulletList text={resume.skills} />
+                </>
+              )}
+            </Stack>
+            <Stack gap="sm">
+              {resume.languages && (
+                <>
+                  <SectionTitle color={resume.colorText} accentColor={resume.background}>
+                    Languages
+                  </SectionTitle>
+                  <Text variant="caption" size="xs">{resume.languages}</Text>
+                </>
+              )}
+            </Stack>
+          </Flex>
 
           <div id="containerEdu">
             <Stack gap="sm">
