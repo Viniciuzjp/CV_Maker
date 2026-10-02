@@ -1,21 +1,22 @@
 'use client';
-import React from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button, Card, Flex, Stack, Text } from "@av-digital/components";
 import { API_BASE_URL } from "@/app/config";
 
 export default function Login() {
+    const router = useRouter();
 
     const [data, setData] = useState({
         email: "",
         password: ""
     })
 
-    const handleSetData = (e:any) => {
-        e.preventDefault()
+    const [errorMessage, setErrorMessage] = useState("");
 
+    const handleSetData = (e: React.ChangeEvent<HTMLInputElement>) => {
         setData({
             ...data,
             [e.target.name]: e.target.value
@@ -33,17 +34,25 @@ export default function Login() {
         localStorage.setItem("username", user.username);
         localStorage.setItem("email", user.email);
         localStorage.setItem("id", user._id);
+        router.push("/");
       }
-    }, [user]);
+    }, [user, router]);
 
-    const handleSubmit = (e:any) => {
-        e.preventDefault()
-        if(data.email == "" || data.password == ""){
-            alert("Por favor, preencha todos os campos")
+    const handleSubmit = () => {
+        setErrorMessage("");
+        if (data.email === "" || data.password === "") {
+            setErrorMessage("Por favor, preencha todos os campos");
+            return;
         }
-        axios.post(`${API_BASE_URL}/login`, data)
-        .then((response) => setUser(response.data))
-        .catch((error) => console.log(error))
+        axios.post(`${API_BASE_URL}/login`, data, { withCredentials: true })
+        .then((response) => {
+            if (!response.data || !response.data.username) {
+                setErrorMessage("E-mail ou senha inválidos");
+                return;
+            }
+            setUser(response.data);
+        })
+        .catch(() => setErrorMessage("Não foi possível entrar. Tente novamente."))
     }
 
     return (
@@ -76,6 +85,9 @@ export default function Login() {
                 className="h-10 w-full border placeholder-gray-400 border-gray-300 rounded-md p-2 outline-gray-400"
                 />
                 </Stack>
+                {errorMessage && (
+                  <Text variant="caption" classname="text-red-500">{errorMessage}</Text>
+                )}
                 <Button onClick={handleSubmit} variant="primary" className="h-10 w-full rounded-md justify-center">Login</Button>
                 <Flex justify="end" className="w-full">
                   <Link href="/register">

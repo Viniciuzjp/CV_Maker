@@ -49,11 +49,14 @@ passport.deserializeUser(async (id, done) => {
     done(err)
   }
 })
-mongoose.connect("mongodb://127.0.0.1:27017/CvMaker")
+mongoose.connect(process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/CvMaker")
 .then(() => console.log("database is connected"))
 .catch((err) => console.log(err))
 
-route.use(cors({ origin: process.env.CLIENT_ORIGIN || "http://localhost:3000" }))
+route.use(cors({
+    origin: process.env.CLIENT_ORIGIN || "http://localhost:3000",
+    credentials: true,
+}))
 
 route.use(express.static("public"))
 route.use(express.json())
@@ -64,20 +67,18 @@ route.get("/", (req,res) => {
 })
 route.post("/curriculum", (req, res) => {
     const {
-        about, name, adress, email, telephone, linkedin, github, objective,
-        experience, experienceDate, experienceDescription, experience2,
-        experienceDate2, experienceDescription2, education, skills,
-        languages, projects, color1, colorText, fontFamily
+        about, name, address, email, telephone, linkedin, github, objective,
+        experiences, education, skills, languages, projects,
+        color1, background, colorText, fontFamily, fontSize
     } = req.body
     const newCurriculum = new curriculum({
-        about, name, adress, email, telephone, linkedin, github, objective,
-        experience, experienceDate, experienceDescription, experience2,
-        experienceDate2, experienceDescription2, education, skills,
-        languages, projects, color1, colorText, fontFamily
+        about, name, address, email, telephone, linkedin, github, objective,
+        experiences, education, skills, languages, projects,
+        color1, background, colorText, fontFamily, fontSize
     })
     newCurriculum.save()
     .then((curriculum) => res.json(curriculum))
-    .catch((err) => res.json(err, "Something went wrong"))
+    .catch((err) => res.status(500).json({ error: "Something went wrong" }))
 })
 route.post('/register', async (req,res)=>{
     if(req.body.username == "" || req.body.email == "" || req.body.password == "" || req.body.password2 == ""){
@@ -101,7 +102,7 @@ route.post('/register', async (req,res)=>{
     })
     Register.save()
     .then((register) => res.json(register))
-    .catch((err) => res.json(err, "Something went wrong"))
+    .catch((err) => res.status(500).json({ error: "Something went wrong" }))
 })
 
 route.post('/login', (req, res, next) => {

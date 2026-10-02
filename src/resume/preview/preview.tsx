@@ -63,12 +63,24 @@ export const Preview = () => {
 
   const ActiveTemplate = templateComponents[selectedTemplate];
 
+  const PX_PER_MM = 3.7795275591;
+
   const handleDownload = () => {
     const getTargetElement = () => document.getElementById("cv");
+    const element = getTargetElement();
+    if (!element) return;
+
+    // react-to-pdf only shrinks the capture to fit an "a4" page, it never
+    // grows it — since the on-screen card can render narrower than a real
+    // A4 page, we size the PDF page to the card's own dimensions instead,
+    // so the exported PDF always matches the preview exactly, edge to edge.
+    const widthMM = element.offsetWidth / PX_PER_MM;
+    const heightMM = element.offsetHeight / PX_PER_MM;
+
     generatePDF(getTargetElement, {
       filename: "curriculo.pdf",
       resolution: Resolution.HIGH,
-      page: { format: "a4", orientation: "portrait" },
+      page: { format: [widthMM, heightMM], orientation: "portrait" },
     });
   };
 
